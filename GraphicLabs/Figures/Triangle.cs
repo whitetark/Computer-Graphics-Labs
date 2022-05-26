@@ -19,5 +19,13 @@ namespace GraphicLabs.Figures
             B = b;
             C = c;
         }
+
+        public Vector GetNormal()
+        {
+            Vector V1 = B - A;
+            Vector V2 = C - A;
+            return Vector.Cross(V1,V2).Normalize();
+
+        }
     }
 }

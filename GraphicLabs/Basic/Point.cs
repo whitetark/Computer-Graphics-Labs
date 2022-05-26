@@ -27,9 +27,9 @@ namespace GraphicLabs.Basic
         {
             return new Point(point.X - vector.X, point.Y - vector.Y, point.Z - vector.Z);
         }
-        public static Point operator -(Point n1, Point n2)
+        public static Vector operator -(Point n1, Point n2)
         {
-            return new Point(n1.X - n2.X, n1.Y - n2.Y, n1.Z - n2.Z);
+            return new Vector(new Point(n1.X - n2.X, n1.Y - n2.Y, n1.Z - n2.Z));
         }
     }
 }

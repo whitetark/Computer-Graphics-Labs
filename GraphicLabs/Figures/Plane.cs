@@ -17,5 +17,10 @@ namespace GraphicLabs.Figures
             normal = vector.Normalize();
             this.center = center;
         }
+
+        public Vector GetNormal(Point point)
+        {
+            return normal;
+        }
     }
 }
