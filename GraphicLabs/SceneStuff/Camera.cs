@@ -1,12 +1,14 @@
-﻿using System;
+﻿using GraphicLabs.Basic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace GraphicLabs.SceneStuff
 {
-    internal class Camera
+    public class Camera
     {
     }
 }

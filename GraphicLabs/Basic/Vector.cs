@@ -30,11 +30,6 @@ namespace GraphicLabs.Basic
             return Math.Sqrt(X * X + Y * Y + Z * Z);
         }
 
-        public static double Dot(Vector n1, Vector n2)
-        {
-            return n1.X * n2.X + n1.Y * n2.Y + n1.Z * n2.Z;
-        }
-
         public static Vector Cross(Vector n1, Vector n2)
         {
             double X = n1.Y * n2.Z - n1.Z * n2.Y;
@@ -67,6 +62,10 @@ namespace GraphicLabs.Basic
         public static Vector operator *(Vector n1, double number)
         {
             return new Vector(new Point(n1.X * number, n1.Y * number, n1.Z * number));
+        }
+        public static double operator *(Vector n1, Vector n2)
+        {
+            return n1.X * n2.X + n1.Y * n2.Y + n1.Z * n2.Z;
         }
     }
 }
