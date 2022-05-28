@@ -31,5 +31,9 @@ namespace GraphicLabs.Basic
         {
             return new Vector(new Point(n1.X - n2.X, n1.Y - n2.Y, n1.Z - n2.Z));
         }
+        public override string ToString()
+        {
+            return $"Point({X}, {Y}, {Z})";
+        }
     }
 }

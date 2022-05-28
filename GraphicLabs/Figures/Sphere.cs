@@ -9,36 +9,41 @@ namespace GraphicLabs.Figures
 {
     public class Sphere
     {
-        public Point center { get; set; }
-        public double radius { get; set; }
+        public Point Center { get; set; }
+        public double Radius { get; set; }
 
         public Sphere(Point center, double radius)
         {
-            this.center = center;
-            this.radius = radius;
+            Center = center;
+            Radius = radius;
         }
 
         public Vector GetNormal(Point point)
         {
-            Vector normal = new Vector(center, point).Normalize();
+            Vector normal = new Vector(Center, point).Normalize();
             return normal;
         }
 
-        public bool IsIntersects(Point origin, Vector ray)
+        public bool IsIntersects(Ray ray)
         {
-            var k = origin - center;
+            var k = ray.Origin - Center;
 
-            var ray2 = ray * ray;
-            var radius2 = radius * radius;
+            var ray2 = ray.Direction * ray.Direction;
+            var radius2 = Radius * Radius;
             var k2 = k * k;
 
             var a = ray2;
-            var b = 2 * (ray * k);
-            var c = k2 * radius2;
+            var b = 2 * (ray.Direction * k);
+            var c = k2 - radius2;
 
             var D = b * b - 4 * a * c;
 
-            return D >= 0;
+            if(D >= 0)
+            {
+                var scale = (-b - Math.Sqrt(D)) / (2 * a);
+                return scale >= 0;
+            };
+            return false;
         }
 
         //(origin + scale*ray - center)^2 = radius^2
@@ -46,27 +51,30 @@ namespace GraphicLabs.Figures
         //(scale*ray + k)^2 = radius^2
         //scale^2*ray^2 + 2*k*scale*ray + k^2 - radius^2 = 0
 
-        public Point IntersectionPoint(Point origin, Vector ray)
+        public Point IntersectionPoint(Ray ray)
         {
-            var k = origin - center;
+            var k = ray.Origin - Center;
 
-            var ray2 = ray * ray;
-            var radius2 = radius * radius;
+            var ray2 = ray.Direction * ray.Direction;
+            var radius2 = Radius * Radius;
             var k2 = k * k;
 
             var a = ray2;
-            var b = 2 * (ray * k);
-            var c = k2 * radius2;
+            var b = 2 * (ray.Direction * k);
+            var c = k2 - radius2;
 
             var D = b * b - 4 * a * c;
 
             var scale = (-b - Math.Sqrt(D)) / (2 * a);
 
-            double X = origin.X + scale * ray.X;
-            double Y = origin.Y + scale * ray.Y;
-            double Z = origin.Z + scale * ray.Z;
-
-            return new Point(X, Y, Z);
+            if(scale >= 0)
+            {
+                double X = ray.Origin.X + scale * ray.Direction.X;
+                double Y = ray.Origin.Y + scale * ray.Direction.Y;
+                double Z = ray.Origin.Z + scale * ray.Direction.Z;
+                return new Point(X, Y, Z);
+            }
+            return null;
         }
     }
 }   

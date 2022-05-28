@@ -9,27 +9,27 @@ namespace GraphicLabs.Figures
 {
     public class Plane
     {
-        public Vector normal { get; set; }
-        public Point center { get; set; }
+        public Vector Normal { get; set; }
+        public Point Center { get; set; }
 
         public Plane(Vector vector, Point center)
         {
-            normal = vector.Normalize();
-            this.center = center;
+            Normal = vector.Normalize();
+            this.Center = center;
         }
 
         public Vector GetNormal(Point point)
         {
-            return normal;
+            return Normal;
         }
 
-        public bool IsIntersects(Point origin, Vector ray)
+        public bool IsIntersects(Ray ray)
         {
-            double result = ray * normal;
+            double result = -(ray.Direction*Normal);
             if (result > 0)
             {
-                Vector k = center - origin;
-                double scale = -((k*normal)/(ray*normal));
+                Vector k = Center - ray.Origin;
+                double scale = -(k*Normal)/result;
                 return scale >= 0;
             }
 
@@ -40,14 +40,14 @@ namespace GraphicLabs.Figures
             // if ray*normal != 0, it's intersects
         }
 
-        public Point IntersectionPoint(Point origin, Vector ray)
+        public Point IntersectionPoint(Ray ray)
         {
-            Vector k = center - origin;
-            double scale = -((k * normal) / (ray * normal));
+            Vector k = Center - ray.Origin;
+            double scale = (-(k * Normal) / -(ray.Direction * Normal));
 
-            double X = origin.X + scale * ray.X;
-            double Y = origin.Y + scale * ray.Y;
-            double Z = origin.Z + scale * ray.Z;
+            double X = ray.Origin.X + scale * ray.Direction.X;
+            double Y = ray.Origin.Y + scale * ray.Direction.Y;
+            double Z = ray.Origin.Z + scale * ray.Direction.Z;
 
             return new Point(X, Y, Z);
 

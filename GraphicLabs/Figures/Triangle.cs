@@ -27,14 +27,14 @@ namespace GraphicLabs.Figures
             return Vector.Cross(Vector1,Vector2).Normalize();
         }
 
-        public bool IsIntersects(Point origin, Vector ray)
+        public bool IsIntersects(Ray ray)
         {
             //Find vectors for two edges
             Vector Edge1 = B - A;
             Vector Edge2 = C - A;
 
             //Calculating determinant
-            Vector p = Vector.Cross(ray, Edge2);
+            Vector p = Vector.Cross(ray.Direction, Edge2);
             double Det = Edge1 * p;
 
             //If determinant is near zero, ray lies in plane of triangle otherwise not
@@ -45,7 +45,7 @@ namespace GraphicLabs.Figures
             double invDet = 1.0f / Det;
 
             //Calculate distance from A to ray origin
-            Vector k = origin - A;
+            Vector k = ray.Origin - A;
 
             double u = k * p * invDet;
             //Check for ray hit
@@ -56,7 +56,7 @@ namespace GraphicLabs.Figures
 
             Vector q = Vector.Cross(k, Edge1);
 
-            double v = ray * q * invDet;
+            double v = ray.Direction * q * invDet;
             //Check for ray hit
             if (v < 0 || u + v > 1) { return false; }
 
@@ -68,17 +68,16 @@ namespace GraphicLabs.Figures
             return false;
         }
 
-        public Point IntersectionPoint(Point origin, Vector ray)
+        public Point IntersectionPoint(Ray ray)
         {
             Vector Edge1 = B - A;
             Vector Edge2 = C - A;
 
-            Vector p = Vector.Cross(ray, Edge2);
+            Vector p = Vector.Cross(ray.Direction, Edge2);
             double Det = Edge1 * p;
             double invDet = 1.0f / Det;
 
-            //Calculate distance from A to ray origin
-            Vector k = origin - A;
+            Vector k = ray.Origin - A;
 
             Vector q = Vector.Cross(k, Edge1);
 
@@ -86,9 +85,10 @@ namespace GraphicLabs.Figures
 
             if (scale > double.Epsilon)
             {
-                double X = origin.X + scale * ray.X;
-                double Y = origin.Y + scale * ray.Y;
-                double Z = origin.Z + scale * ray.Z;
+                double X = ray.Origin.X + scale * ray.Direction.X;
+                double Y = ray.Origin.Y + scale * ray.Direction.Y;
+                double Z = ray.Origin.Z + scale * ray.Direction.Z;
+                return new Point(X, Y, Z);
             }
 
             return null;
