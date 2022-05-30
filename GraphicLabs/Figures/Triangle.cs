@@ -35,7 +35,7 @@ namespace GraphicLabs.Figures
 
             //Calculating determinant
             Vector p = Vector.Cross(ray.Direction, Edge2);
-            double Det = Edge1 * p;
+            double Det = Vector.Dot(Edge1,p);
 
             //If determinant is near zero, ray lies in plane of triangle otherwise not
             if (Det > -(double.Epsilon)&& Det < double.Epsilon)
@@ -47,7 +47,7 @@ namespace GraphicLabs.Figures
             //Calculate distance from A to ray origin
             Vector k = ray.Origin - A;
 
-            double u = k * p * invDet;
+            double u = Vector.Dot(k,p) * invDet;
             //Check for ray hit
             if (u < 0 || u > 1)
             { 
@@ -56,11 +56,11 @@ namespace GraphicLabs.Figures
 
             Vector q = Vector.Cross(k, Edge1);
 
-            double v = ray.Direction * q * invDet;
+            double v = Vector.Dot(ray.Direction,q) * invDet;
             //Check for ray hit
             if (v < 0 || u + v > 1) { return false; }
 
-            if ((Edge2 * q * invDet) > double.Epsilon)
+            if ((Vector.Dot(Edge2,q) * invDet) > double.Epsilon)
             {
                 return true;
             }
@@ -74,14 +74,14 @@ namespace GraphicLabs.Figures
             Vector Edge2 = C - A;
 
             Vector p = Vector.Cross(ray.Direction, Edge2);
-            double Det = Edge1 * p;
+            double Det = Vector.Dot(Edge1,p);
             double invDet = 1.0f / Det;
 
             Vector k = ray.Origin - A;
 
             Vector q = Vector.Cross(k, Edge1);
 
-            var scale = Edge2 * q * invDet;
+            var scale = Vector.Dot(Edge2,q) * invDet;
 
             if (scale > double.Epsilon)
             {

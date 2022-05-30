@@ -14,7 +14,7 @@ namespace GraphicLabs.Basic
         public Ray(Point origin, Vector direction)
         {
             Origin = origin;
-            Direction = direction;
+            Direction = direction.Normalize();
         }
 
         public Ray(Point origin, Point end)

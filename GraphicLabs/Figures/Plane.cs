@@ -25,11 +25,11 @@ namespace GraphicLabs.Figures
 
         public bool IsIntersects(Ray ray)
         {
-            double result = -(ray.Direction*Normal);
+            double result = -(Vector.Dot(ray.Direction,Normal));
             if (result > 0)
             {
                 Vector k = Center - ray.Origin;
-                double scale = -(k*Normal)/result;
+                double scale = -(Vector.Dot(k,Normal))/result;
                 return scale >= 0;
             }
 
@@ -43,7 +43,7 @@ namespace GraphicLabs.Figures
         public Point IntersectionPoint(Ray ray)
         {
             Vector k = Center - ray.Origin;
-            double scale = (-(k * Normal) / -(ray.Direction * Normal));
+            double scale = -(Vector.Dot(k,Normal) / -Vector.Dot(ray.Direction,Normal));
 
             double X = ray.Origin.X + scale * ray.Direction.X;
             double Y = ray.Origin.Y + scale * ray.Direction.Y;

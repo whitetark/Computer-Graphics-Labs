@@ -3,7 +3,8 @@ using GraphicLabs.Basic;
 
 //plane intersection test
 
-/*Plane plane = new Plane(new Vector(new Point(2,3,3),new Point(2,2,3)), new Point(2,3,3));
+/*
+Plane plane = new Plane(new Vector(new Point(2,3,3),new Point(2,2,3)), new Point(2,3,3));
 Ray ray = new Ray(new Point(1, 0, 1), new Point(1, 2, 2));
 var truth = plane.IsIntersects(ray);
 Console.WriteLine(truth);

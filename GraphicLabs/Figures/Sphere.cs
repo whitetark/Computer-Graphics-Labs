@@ -28,13 +28,9 @@ namespace GraphicLabs.Figures
         {
             var k = ray.Origin - Center;
 
-            var ray2 = ray.Direction * ray.Direction;
-            var radius2 = Radius * Radius;
-            var k2 = k * k;
-
-            var a = ray2;
-            var b = 2 * (ray.Direction * k);
-            var c = k2 - radius2;
+            var a = Vector.Dot(ray.Direction, ray.Direction); ;
+            var b = 2 * Vector.Dot(ray.Direction, k);
+            var c = Vector.Dot(k, k) - (Radius * Radius);
 
             var D = b * b - 4 * a * c;
 
@@ -55,13 +51,9 @@ namespace GraphicLabs.Figures
         {
             var k = ray.Origin - Center;
 
-            var ray2 = ray.Direction * ray.Direction;
-            var radius2 = Radius * Radius;
-            var k2 = k * k;
-
-            var a = ray2;
-            var b = 2 * (ray.Direction * k);
-            var c = k2 - radius2;
+            var a = Vector.Dot(ray.Direction, ray.Direction); ;
+            var b = 2 * Vector.Dot(ray.Direction,k);
+            var c = Vector.Dot(k, k) - (Radius * Radius);
 
             var D = b * b - 4 * a * c;
 

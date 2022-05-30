@@ -12,11 +12,11 @@ namespace GraphicLabs.Basic
         public double Y { get; set; }
         public double Z { get; set; }
 
-        public Vector(Point point)
+        public Vector(double X, double Y, double Z)
         {
-            X = point.X;
-            Y = point.Y;
-            Z = point.Z;
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
         }
         public Vector(Point start, Point end)
         {
@@ -35,7 +35,11 @@ namespace GraphicLabs.Basic
             double X = n1.Y * n2.Z - n1.Z * n2.Y;
             double Y = n1.Z * n2.X - n1.X * n2.Z;
             double Z = n1.X * n2.Y - n1.Y * n2.X;
-            return new Vector(new Point(X, Y, Z));
+            return new Vector(X, Y, Z);
+        }
+        public static double Dot(Vector n1, Vector n2)
+        {
+            return n1.X * n2.X + n1.Y * n2.Y + n1.Z * n2.Z;
         }
 
         public Vector Normalize()
@@ -46,26 +50,22 @@ namespace GraphicLabs.Basic
                 double X = this.X / Length;
                 double Y = this.Y / Length;
                 double Z = this.Z / Length;
-                return new Vector(new Point(X, Y, Z));
+                return new Vector(X, Y, Z);
             }
             return this;
         }
 
         public static Vector operator +(Vector n1, Vector n2)
         {
-            return new Vector(new Point(n1.X+n2.X, n1.Y+n2.Y, n1.Z+n2.Z));
+            return new Vector(n1.X+n2.X, n1.Y+n2.Y, n1.Z+n2.Z);
         }
         public static Vector operator -(Vector n1, Vector n2)
         {
-            return new Vector(new Point(n1.X - n2.X, n1.Y - n2.Y, n1.Z - n2.Z));
+            return new Vector(n1.X - n2.X, n1.Y - n2.Y, n1.Z - n2.Z);
         }
         public static Vector operator *(Vector n1, double number)
         {
-            return new Vector(new Point(n1.X * number, n1.Y * number, n1.Z * number));
-        }
-        public static double operator *(Vector n1, Vector n2)
-        {
-            return n1.X * n2.X + n1.Y * n2.Y + n1.Z * n2.Z;
+            return new Vector(n1.X * number, n1.Y * number, n1.Z * number);
         }
     }
 }
