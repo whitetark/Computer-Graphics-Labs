@@ -10,13 +10,11 @@ namespace GraphicLabs.SceneStuff
     public class DirectionalLight
     {
         
-        public DirectionalLight Direction(Vector direction)
+        /*public DirectionalLight Direction(Vector direction)
         {
             get=>direction;
-            set
-            {
-                direction=value.Normalize().Scale(-1);
-            }
+            set => direction=value.Normalize().Scale(-1);
         }
+        */
     }
 }

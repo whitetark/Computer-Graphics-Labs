@@ -1,6 +1,17 @@
 ﻿using GraphicLabs.Figures;
 using GraphicLabs.Basic;
 
+namespace CompGraphics
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            
+        }
+    }
+}
+
 //plane intersection test
 
 /*

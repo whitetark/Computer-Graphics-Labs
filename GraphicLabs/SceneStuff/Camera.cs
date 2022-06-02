@@ -10,26 +10,29 @@ namespace GraphicLabs.SceneStuff
     public class Camera
     {
         private Point startPoint { get; set; }
-        private Vector vectorDirection = new Vector(-1.0, 0, 0); 
-
-        public Camera Direction()
+        private Vector vectorDirection = new Vector(-1.0, 0, 0);
+        
+        /*public Camera Direction()
         {
             get=>vectorDirection;
             set
             {
                 vectorDirection=value.Normalize();
             }
-        }
+        }*/
 
         private double distance {get; set;}
-        private double height = 15.0;
-        private double width = 15.0;
+        private double height = 20.0;
+        private double width = 20.0;
         private double xChange;
         private double yChange;
 
         private Point leftTop;
         private Point rightTop;
         private Point leftBottom;
+        
+        private Vector xIncrease => new Vector(leftTop, rightTop) * (1.0/xChange);
+        private Vector yIncrease => new Vector(leftTop, leftBottom) * (1.0/yChange);
 
         public Camera(double xChanges, double yChanges)
         {   
@@ -41,22 +44,19 @@ namespace GraphicLabs.SceneStuff
             leftBottom = new Point(0, -height/2.0, width/2.0);
         }
 
-        private Vector xIncrease => (rightTop-leftTop).Scale(1.0/xChange);
-        private Vector yIncrease => (leftBottom-leftTop).Scale(1.0/yChange);
-
-        private Point pixelPosition(int x, int y)
+        private Point PixelPosition(int x, int y)
         {
-            return leftTop + xIncrease.Scale(x) + yIncrease.Scale(y);
+            return (xIncrease * x) + (yIncrease * y) + leftTop;
         }
 
-        private Ray ray()
+        /*private Ray ray()
         {
             return new Ray()
             {
-                start = startPoint, dir = (pixelPosition(x,y)-startPoint).Normalize()
+                start = startPoint, dir = (PixelPosition(x,y)-startPoint).Normalize()
             };
         }
-
+*/
 
     }
 }
