@@ -9,8 +9,8 @@ namespace GraphicLabs.SceneStuff
 {
     public class Camera
     {
-        private Point startPoint { get; set; }
-        private Vector vectorDirection = new Vector(-1.0, 0, 0);
+        public Point startPoint { get; set; }
+        private Vector vectorDirection = new Vector(0, 0, 1);
         
         /*public Camera Direction()
         {
@@ -66,7 +66,8 @@ namespace GraphicLabs.SceneStuff
 */
         public Ray ray(int x, int y)
         {
-            return new Ray(startPoint, Direction = (PixelPosition(x, y) - startPoint).Normalize());
+            Direction = new Vector(startPoint, PixelPosition(x, y)).Normalize();
+            return new Ray(startPoint, Direction);
         }
         }   
 
