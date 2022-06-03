@@ -21,10 +21,10 @@ namespace GraphicLabs.SceneStuff
             }
         }*/
 
-        public Vector Direction()
+        public Vector Direction
         {
-            get{vectorDirection;}
-            set{vectorDirection=value.Normalize();}
+            get { return vectorDirection; }
+            set { vectorDirection = value.Normalize(); }
         }
 
         private double distance {get; set;}
@@ -54,20 +54,20 @@ namespace GraphicLabs.SceneStuff
         {
             return (xIncrease * x) + (yIncrease * y) + leftTop;
         }
-
-        /*private Ray ray()
+/*
+        private Ray ray()
         {
             return new Ray()
             {
                 start = startPoint, dir = (PixelPosition(x,y)-startPoint).Normalize()
             };
         }
-*/
+
 
         private Ray ray(int x, int y)
         {
             return new Ray() {Origin = startPoint, Direction = (PixelPosition(x,y)-startPoint).Normalize();}
-        }   
+        }   */
 
     }
 }

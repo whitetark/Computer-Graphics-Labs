@@ -12,9 +12,9 @@ namespace GraphicLabs.Figures
         public Vector Normal { get; set; }
         public Point Center { get; set; }
 
-        public Plane(Vector vector, Point center)
+        public Plane(Vector normal, Point center)
         {
-            Normal = vector.Normalize();
+            Normal = normal.Normalize();
             this.Center = center;
         }
 

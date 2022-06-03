@@ -19,10 +19,10 @@ namespace GraphicLabs.SceneStuff
         }
         */
 
-        public Vector Direction()
+        public Vector Direction
         {
-            get{direction;}
-            set{direction=value.Normalize().Scale(-1);}
+            get{return direction;}
+            set{direction=value.Normalize()*(-1);}
         }
     }
 }
