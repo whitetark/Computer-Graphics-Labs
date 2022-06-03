@@ -21,6 +21,12 @@ namespace GraphicLabs.SceneStuff
             }
         }*/
 
+        public Vector Direction()
+        {
+            get{vectorDirection;}
+            set{vectorDirection=value.Normalize();}
+        }
+
         private double distance {get; set;}
         private double height = 20.0;
         private double width = 20.0;
@@ -57,6 +63,11 @@ namespace GraphicLabs.SceneStuff
             };
         }
 */
+
+        private Ray ray(int x, int y)
+        {
+            return new Ray() {Origin = startPoint, Direction = (PixelPosition(x,y)-startPoint).Normalize();}
+        }   
 
     }
 }
