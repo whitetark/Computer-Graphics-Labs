@@ -23,6 +23,7 @@ namespace GraphicLabs.SceneStuff
         {
             get => direction;
             set => direction=value.Normalize() * (-1);
+
         }
     }
 }
