@@ -9,17 +9,8 @@ namespace GraphicLabs.SceneStuff
 {
     public class Camera
     {
-        public Point startPoint { get; set; }
-        private Vector vectorDirection = new Vector(0, 0, 1);
-        
-        /*public Camera Direction()
-        {
-            get=>vectorDirection;
-            set
-            {
-                vectorDirection=value.Normalize();
-            }
-        }*/
+        private Point startPoint;
+        private Vector vectorDirection = new Vector(0, 1, 1);
 
         public Vector Direction
         {
@@ -27,7 +18,7 @@ namespace GraphicLabs.SceneStuff
             set => vectorDirection=value.Normalize();
     }
 
-        private double distance {get; set;}
+        private double distance;
         private double height = 20.0;
         private double width = 20.0;
         private double xChange;
@@ -37,8 +28,9 @@ namespace GraphicLabs.SceneStuff
         private Point rightTop;
         private Point leftBottom;
 
-        public Camera(double xChanges, double yChanges)
-        {   
+        public Camera(double xChanges, double yChanges, double x, double y, double z)
+        {
+            startPoint = new Point(x, y, z);
             xChange=xChanges;
             yChange=yChanges;
 
@@ -54,16 +46,7 @@ namespace GraphicLabs.SceneStuff
         {
             return (xIncrease * x) + (yIncrease * y) + leftTop;
         }
-/*
-        private Ray ray()
-        {
-            return new Ray()
-            {
-                start = startPoint, dir = (PixelPosition(x,y)-startPoint).Normalize()
-            };
-        }
 
-*/
         public Ray ray(int x, int y)
         {
             Direction = new Vector(startPoint, PixelPosition(x, y)).Normalize();
