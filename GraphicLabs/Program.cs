@@ -9,9 +9,10 @@ namespace CompGraphics
     {
         static void Main(string[] args)
         {
-            Camera camera = new Camera(20, 20, 0, 0, -5);
+            Camera camera = new Camera(100, 20, 0, 0, -5);
             
-            Sphere testSphere = new Sphere(new Point(0, 0, 10), 7);
+            Sphere testSphere = new Sphere(new Point(1, 0, 10), 7);
+            Sphere testSphere2 = new Sphere(new Point(0, 0, 10), 7);
             
             char[,] screenDrawer = new char[20, 20];
 
@@ -23,11 +24,12 @@ namespace CompGraphics
                 {
                     if (testSphere.IsIntersects(camera.ray(i, j)))
                     {
-                        if((Vector.Dot(camera.ray(i, j).Direction, lightSource.Direction)) < 0) screenDrawer[i, j] = ' ';
-                        if(((Vector.Dot(camera.ray(i, j).Direction, lightSource.Direction)) >= 0) && ((Vector.Dot(camera.ray(i, j).Direction, lightSource.Direction)) < 0.2)) screenDrawer[i, j] = '.';
-                        if(((Vector.Dot(camera.ray(i, j).Direction, lightSource.Direction)) >= 0.2) && ((Vector.Dot(camera.ray(i, j).Direction, lightSource.Direction)) < 0.5)) screenDrawer[i, j] = '*';
-                        if(((Vector.Dot(camera.ray(i, j).Direction, lightSource.Direction)) >= 0.5) && ((Vector.Dot(camera.ray(i, j).Direction, lightSource.Direction)) < 0.8)) screenDrawer[i, j] = '0';
-                        if((Vector.Dot(camera.ray(i, j).Direction, lightSource.Direction)) >= 0.8) screenDrawer[i, j] = '#';
+                        Vector norm = new Vector(testSphere.Center, testSphere.IntersectionPoint(camera.ray(i, j)));
+                        if((Vector.Dot(norm, lightSource.Direction)) < 0) screenDrawer[i, j] = ' ';
+                        if(((Vector.Dot(norm, lightSource.Direction)) >= 0) && ((Vector.Dot(norm, lightSource.Direction)) < 0.2)) screenDrawer[i, j] = '.';
+                        if(((Vector.Dot(norm, lightSource.Direction)) >= 0.2) && ((Vector.Dot(norm, lightSource.Direction)) < 0.5)) screenDrawer[i, j] = '*';
+                        if(((Vector.Dot(norm, lightSource.Direction)) >= 0.5) && ((Vector.Dot(norm, lightSource.Direction)) < 0.8)) screenDrawer[i, j] = '0';
+                        if((Vector.Dot(norm, lightSource.Direction)) >= 0.8) screenDrawer[i, j] = '#';
                     }
                     else screenDrawer[i, j] = ' ';
                 }
