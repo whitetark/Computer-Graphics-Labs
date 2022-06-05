@@ -16,7 +16,7 @@ namespace GraphicLabs.SceneStuff
         {
             get => vectorDirection;
             set => vectorDirection=value.Normalize();
-    }
+        }
 
         private double distance;
         private double height = 20.0;
@@ -52,7 +52,7 @@ namespace GraphicLabs.SceneStuff
             Direction = new Vector(startPoint, PixelPosition(x, y)).Normalize();
             return new Ray(startPoint, Direction);
         }
-        }   
+    }   
 
 
     
