@@ -14,7 +14,7 @@ namespace CompGraphics
             Sphere testSphere = new Sphere(new Point(1, 0, 10), 7);
             Sphere testSphere2 = new Sphere(new Point(2, 3, 10), 20);
             
-            List<Sphere> figures = new List<Sphere>(); //rewrite to figures
+            List<Figure> figures = new List<Figure>(); //rewrite to figures
             figures.Add(testSphere);
             figures.Add(testSphere2);
             
@@ -22,13 +22,13 @@ namespace CompGraphics
 
             DirectionalLight lightSource = new DirectionalLight() {Direction = new Vector(0, 1, 1)};
             
-           /* for (int i = 0; i < 20; i++)
+            /*for (int i = 0; i < 20; i++)
             {
                 for (int j = 0; j < 20; j++)
                 {
                     if (testSphere.IsIntersects(camera.ray(i, j)))
                     {
-                        Vector norm = new Vector(testSphere.Center, testSphere.IntersectionPoint(camera.ray(i, j)));
+                        Vector norm = testSphere.GetNormal(testSphere.IntersectionPoint(camera.ray(i, j)));
                         if((Vector.Dot(norm, lightSource.Direction)) < 0) screenDrawer[i, j] = ' ';
                         if(((Vector.Dot(norm, lightSource.Direction)) >= 0) && ((Vector.Dot(norm, lightSource.Direction)) < 0.2)) screenDrawer[i, j] = '.';
                         if(((Vector.Dot(norm, lightSource.Direction)) >= 0.2) && ((Vector.Dot(norm, lightSource.Direction)) < 0.5)) screenDrawer[i, j] = '*';
@@ -37,14 +37,14 @@ namespace CompGraphics
                     }
                     else screenDrawer[i, j] = ' ';
                 }
-            } */
-           
+            } 
+           */
            for (int i = 0; i < 20; i++)
            {
                for (int j = 0; j < 20; j++)
                {
                    double distance = 0;
-                   Sphere nearestFigure = figures[0]; //rewrite to figures
+                   Figure nearestFigure = figures[0]; //rewrite to figures
                    for (int k = 0; k < figures.Count; k++)
                    {
                        if (figures[k].IsIntersects(camera.ray(i, j)))
@@ -60,23 +60,21 @@ namespace CompGraphics
 
                    if (nearestFigure.IsIntersects(camera.ray(i, j)))
                    {
-                       Vector norm = new Vector(nearestFigure.Center,
-                           nearestFigure.IntersectionPoint(camera.ray(i, j)));
-                       if ((Vector.Dot(norm, lightSource.Direction)) < 0) screenDrawer[i, j] = ' ';
-                       if (((Vector.Dot(norm, lightSource.Direction)) >= 0) &&
-                           ((Vector.Dot(norm, lightSource.Direction)) < 0.2)) screenDrawer[i, j] = '.';
-                       if (((Vector.Dot(norm, lightSource.Direction)) >= 0.2) &&
-                           ((Vector.Dot(norm, lightSource.Direction)) < 0.5)) screenDrawer[i, j] = '*';
-                       if (((Vector.Dot(norm, lightSource.Direction)) >= 0.5) &&
-                           ((Vector.Dot(norm, lightSource.Direction)) < 0.8)) screenDrawer[i, j] = '0';
-                       if ((Vector.Dot(norm, lightSource.Direction)) >= 0.8) screenDrawer[i, j] = '#';
+                       Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(camera.ray(i, j)));
+                       double lightDot = Vector.Dot(norm, lightSource.Direction);
+                       if (lightDot < 0) screenDrawer[i, j] = ' ';
+                       if ((lightDot >= 0) &&
+                           (lightDot < 0.2)) screenDrawer[i, j] = '.';
+                       if ((lightDot >= 0.2) &&
+                           (lightDot < 0.5)) screenDrawer[i, j] = '*';
+                       if ((lightDot >= 0.5) &&
+                           (lightDot < 0.8)) screenDrawer[i, j] = '0';
+                       if (lightDot >= 0.8) screenDrawer[i, j] = '#';
                    }
 
                }
            }
 
-                
-            
             for (int i = 0; i < 20; i++)
             {
                 for (int j = 0; j < 20; j++)
