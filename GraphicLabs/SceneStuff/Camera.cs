@@ -10,7 +10,7 @@ namespace GraphicLabs.SceneStuff
     public class Camera
     {
         public Point startPoint;
-        private Vector vectorDirection = new Vector(0, 1, 1);
+        private Vector vectorDirection = new Vector(0, 0, -1);
 
         public Vector Direction
         {
