@@ -12,7 +12,7 @@ namespace CompGraphics
             Camera camera = new Camera(100, 20, 0, 0, -5);
             
             Sphere testSphere = new Sphere(new Point(1, 0, 10), 7);
-            Sphere testSphere2 = new Sphere(new Point(2, 3, 10), 20);
+            Sphere testSphere2 = new Sphere(new Point(4, 3, 10), 20);
             
             List<Figure> figures = new List<Figure>(); //rewrite to figures
             figures.Add(testSphere);
@@ -21,6 +21,7 @@ namespace CompGraphics
             char[,] screenDrawer = new char[20, 20];
 
             DirectionalLight lightSource = new DirectionalLight() {Direction = new Vector(0, 1, 1)};
+            Vector lightReverseVector = new Vector(0, 0, 0) - lightSource.Direction;
             
             /*for (int i = 0; i < 20; i++)
             {
@@ -61,7 +62,7 @@ namespace CompGraphics
                    if (nearestFigure.IsIntersects(camera.ray(i, j)))
                    {
                        Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(camera.ray(i, j)));
-                       double lightDot = Vector.Dot(norm, lightSource.Direction);
+                       double lightDot = Vector.Dot(norm, lightReverseVector);
                        if (lightDot < 0) screenDrawer[i, j] = ' ';
                        if ((lightDot >= 0) &&
                            (lightDot < 0.2)) screenDrawer[i, j] = '.';
