@@ -7,7 +7,7 @@ using GraphicLabs.Basic;
 
 namespace GraphicLabs.Figures
 {
-    public class Triangle
+    public class Triangle : Figure
     {
         public Point A { get; set; }
         public Point B { get; set; }
@@ -20,14 +20,14 @@ namespace GraphicLabs.Figures
             C = c;
         }
 
-        public Vector GetNormal()
+        public override Vector GetNormal(Point point)
         {
             Vector Vector1 = B - A;
             Vector Vector2 = C - A;
             return Vector.Cross(Vector1,Vector2).Normalize();
         }
 
-        public bool IsIntersects(Ray ray)
+        public override bool IsIntersects(Ray ray)
         {
             //Find vectors for two edges
             Vector Edge1 = B - A;
@@ -68,7 +68,7 @@ namespace GraphicLabs.Figures
             return false;
         }
 
-        public Point IntersectionPoint(Ray ray)
+        public override Point IntersectionPoint(Ray ray)
         {
             Vector Edge1 = B - A;
             Vector Edge2 = C - A;

@@ -7,7 +7,7 @@ using GraphicLabs.Basic;
 
 namespace GraphicLabs.Figures
 {
-    public class Plane
+    public class Plane : Figure
     {
         public Vector Normal { get; set; }
         public Point Center { get; set; }
@@ -18,12 +18,12 @@ namespace GraphicLabs.Figures
             this.Center = center;
         }
 
-        public Vector GetNormal(Point point)
+        public override Vector GetNormal(Point point)
         {
             return Normal;
         }
 
-        public bool IsIntersects(Ray ray)
+        public override bool IsIntersects(Ray ray)
         {
             double result = -(Vector.Dot(ray.Direction,Normal));
             if (result > 0)
@@ -40,7 +40,7 @@ namespace GraphicLabs.Figures
             // if ray*normal != 0, it's intersects
         }
 
-        public Point IntersectionPoint(Ray ray)
+        public override Point IntersectionPoint(Ray ray)
         {
             Vector k = Center - ray.Origin;
             double scale = -(Vector.Dot(k,Normal) / -Vector.Dot(ray.Direction,Normal));

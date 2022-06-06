@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GraphicLabs.Figures
 {
-    public class Sphere
+    public class Sphere : Figure
     {
         public Point Center { get; set; }
         public double Radius { get; set; }
@@ -18,13 +18,13 @@ namespace GraphicLabs.Figures
             Radius = radius;
         }
 
-        public Vector GetNormal(Point point)
+        public override Vector GetNormal(Point point)
         {
             Vector normal = new Vector(Center, point).Normalize();
             return normal;
         }
 
-        public bool IsIntersects(Ray ray)
+        public override bool IsIntersects(Ray ray)
         {
             var k = ray.Origin - Center;
 
@@ -47,7 +47,7 @@ namespace GraphicLabs.Figures
         //(scale*ray + k)^2 = radius^2
         //scale^2*ray^2 + 2*k*scale*ray + k^2 - radius^2 = 0
 
-        public Point IntersectionPoint(Ray ray)
+        public override Point IntersectionPoint(Ray ray)
         {
             var k = ray.Origin - Center;
 

@@ -11,7 +11,6 @@ namespace GraphicLabs.Figures
     {
         public abstract bool IsIntersects(Ray ray);
         public abstract Vector GetNormal(Point point);
-
         public abstract Point IntersectionPoint(Ray ray);
     }
 }
