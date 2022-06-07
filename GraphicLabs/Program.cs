@@ -1,7 +1,6 @@
 ﻿using GraphicLabs.Figures;
 using GraphicLabs.Basic;
 using GraphicLabs.SceneStuff;
-using GraphicLabs.Tests;
 
 namespace CompGraphics
 {
