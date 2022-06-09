@@ -9,48 +9,52 @@ namespace GraphicLabs.SceneStuff
 {
     public class Camera
     {
-        public Point startPoint;
-        private Vector vectorDirection = new Vector(0, 0, -1);
+        public Point cameraOrigin { get; set; }
+        
+        private Vector vectorDirection;
+        private Point screenOrigin;
 
-        public Vector Direction
+        private double fov = 60;
+        
+
+        public int height { get; set; }
+        public int width { get; set; }
+        private double imageAspectRatio;
+        
+
+        public Camera(double x, double y, double z, double X, double Y, double Z, int screenHeight, int screenWidth)
         {
-            get => vectorDirection;
-            set => vectorDirection=value.Normalize();
-        }
+            cameraOrigin = new Point(x, y, z);
+            vectorDirection = new Vector(X, Y, Z);
 
-        private double distance;
-        private double height = 20.0;
-        private double width = 20.0;
-        private double xChange;
-        private double yChange;
+            screenOrigin = vectorDirection.Normalize() + cameraOrigin;
 
-        private Point leftTop;
-        private Point rightTop;
-        private Point leftBottom;
-
-        public Camera(double xChanges, double yChanges, double x, double y, double z)
-        {
-            startPoint = new Point(x, y, z);
-            xChange=xChanges;
-            yChange=yChanges;
-
-            leftTop = new Point(0, height/2.0, width/2.0);
-            rightTop = new Point(0, height/2.0, -width/2.0);
-            leftBottom = new Point(0, -height/2.0, width/2.0);
+            height = screenHeight;
+            width = screenWidth;
+            
         }
         
-        private Vector xIncrease => new Vector(leftTop, rightTop) * (1.0/xChange);
-        private Vector yIncrease => new Vector(leftTop, leftBottom) * (1.0/yChange);
 
         private Point PixelPosition(int x, int y)
         {
-            return (xIncrease * x) + (yIncrease * y) + leftTop;
+            double xPos = (2 * ((x + 0.5) / (double)width) - 1) * Math.Tan(fov / 2 * Math.PI / 180);
+            double yPos = 1 - 2 * ((y + 0.5) / (double)height) * Math.Tan(fov / 2 * Math.PI / 180);
+            if (width > height)
+            {
+                imageAspectRatio = (double)width / (double)height;
+                xPos *= imageAspectRatio;
+            }
+            else if (height > width)
+            {
+                imageAspectRatio = (double)height / (double)width;
+                yPos *= imageAspectRatio;
+            }
+            return new Point(xPos, yPos, vectorDirection.Z);
         }
 
         public Ray ray(int x, int y)
         {
-            Direction = new Vector(startPoint, PixelPosition(x, y)).Normalize();
-            return new Ray(startPoint, Direction);
+            return new Ray(cameraOrigin, new Vector(cameraOrigin, PixelPosition(x, y)).Normalize());
         }
     }   
 
