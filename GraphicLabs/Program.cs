@@ -8,7 +8,7 @@ namespace CompGraphics
     {
         static void Main(string[] args)
         {
-            Camera camera = new Camera(0, 0, 0, 0,0, -1, 40, 40);
+            Camera camera = new Camera(0, 0, 0, 0,0, -1, 20, 20);
             
             Sphere testSphere = new Sphere(new Point(1, 1, -10), 2);
             Sphere testSphere2 = new Sphere(new Point(0, 3, -12), 4);

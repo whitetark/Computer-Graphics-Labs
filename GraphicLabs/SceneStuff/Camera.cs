@@ -16,7 +16,6 @@ namespace GraphicLabs.SceneStuff
 
         private double fov = 60;
         
-
         public int height { get; set; }
         public int width { get; set; }
         private double imageAspectRatio;
@@ -37,8 +36,13 @@ namespace GraphicLabs.SceneStuff
 
         private Point PixelPosition(int x, int y)
         {
-            double xPos = (2 * ((x + 0.5) / (double)width) - 1) * Math.Tan(fov / 2 * Math.PI / 180);
-            double yPos = 1 - 2 * ((y + 0.5) / (double)height) * Math.Tan(fov / 2 * Math.PI / 180);
+            double halfFovTan = Math.Tan(fov / 2 * Math.PI / 180);
+            
+            double pixelTransformX = (x + 0.5) / (double) width;
+            double pixelTransformY = (y + 0.5) / (double) height;
+            
+            double xPos = (2 * pixelTransformX  - 1) * halfFovTan;
+            double yPos = (1 - 2 * pixelTransformY) * halfFovTan;
             if (width > height)
             {
                 imageAspectRatio = (double)width / (double)height;
