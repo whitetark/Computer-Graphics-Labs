@@ -21,8 +21,6 @@ namespace GraphicLabs.SceneStuff
         }
         public Scene(Camera camera, DirectionalLight directionLight):this(camera)    
         {
-            
-
             dirLight = directionLight;
         }
 
