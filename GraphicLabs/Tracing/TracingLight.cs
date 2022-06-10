@@ -12,7 +12,7 @@ namespace GraphicLabs.Tracing
 {
     public class TracingLight
     {
-        private Figure FindNearest(Scene scene, int i, int j)
+        public Figure FindNearest(Scene scene, int i, int j)
         {
             Figure nearestFigure = scene.figuresOnScene[0];
             double distance = Double.PositiveInfinity;
@@ -82,6 +82,7 @@ namespace GraphicLabs.Tracing
                 }
             }
 
+            
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
                 for (int j = 0; j < scene.cameraOnScene.height; j++)
