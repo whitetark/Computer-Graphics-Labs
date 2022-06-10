@@ -9,7 +9,6 @@ namespace GraphicLabs.SceneStuff
 {
     public class DirectionalLight
     {
-
         private Vector direction;
         
         public Vector Direction

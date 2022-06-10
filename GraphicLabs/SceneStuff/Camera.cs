@@ -20,7 +20,6 @@ namespace GraphicLabs.SceneStuff
         public int width { get; set; }
         private double imageAspectRatio;
         
-
         public Camera(double x, double y, double z, double X, double Y, double Z, int screenHeight, int screenWidth)
         {
             cameraOrigin = new Point(x, y, z);
@@ -30,10 +29,8 @@ namespace GraphicLabs.SceneStuff
 
             height = screenHeight;
             width = screenWidth;
-            
         }
         
-
         private Point PixelPosition(int x, int y)
         {
             double halfFovTan = Math.Tan(fov / 2 * Math.PI / 180);
@@ -61,7 +58,4 @@ namespace GraphicLabs.SceneStuff
             return new Ray(cameraOrigin, new Vector(cameraOrigin, PixelPosition(x, y)).Normalize());
         }
     }   
-
-
-    
 }
