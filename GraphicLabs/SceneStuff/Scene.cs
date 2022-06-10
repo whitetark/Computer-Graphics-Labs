@@ -19,10 +19,10 @@ namespace GraphicLabs.SceneStuff
         {
             cameraOnScene = camera;
         }
-        public Scene(Camera camera,List<Figure> figures, DirectionalLight directionLight):this(camera)    
+        public Scene(Camera camera, DirectionalLight directionLight):this(camera)    
         {
             
-            figuresOnScene = figures;
+
             dirLight = directionLight;
         }
 

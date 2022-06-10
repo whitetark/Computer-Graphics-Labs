@@ -12,31 +12,17 @@ namespace GraphicLabs.Tracing
 {
     public class TracingLight
     {
-        public void Trace()
+        
+
+        public void Trace(Scene scene)
         {
-            Camera camera = new Camera(0, 0, 0, 0, 0, -1, 20, 20);
-            Sphere testSphere = new Sphere(new Point(1, 1, -10), 2);
-            Sphere testSphere2 = new Sphere(new Point(0, 3, -12), 4);
-            Triangle testTriangle = new Triangle(new Point(1, 1, -15), new Point(5, 5, -11), new Point(0, 3, -2));
-            Plane testPlane = new Plane(new Vector(0, 0, 1), new Point(0, 0, -20));
-            Scene scene = new Scene(camera);
+           
 
-            List<Figure> figures = new List<Figure>();
-            figures.Add(testSphere);
-            figures.Add(testSphere2); //
-            scene.addFigure(testSphere);
-            scene.addFigure(testSphere2);
-            figures.Add(testSphere2); //
-            figures.Add(testTriangle);
-            scene.addFigure(testTriangle);
-            scene.addFigure(testPlane);
 
-            figures.Add(testPlane); //
 
-            char[,] screenDrawer = new char[camera.width, camera.height];
+            char[,] screenDrawer = new char[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, 0, -1) };
-            Vector lightReverseVector = new Vector(0, 0, 0) - lightSource.Direction;
+            Vector lightReverseVector = new Vector(0, 0, 0) - scene.dirLight.Direction;
 
             //for (int i = 0; i < 20; i++)
             //{
@@ -57,29 +43,29 @@ namespace GraphicLabs.Tracing
 
 
             //
-            for (int i = 0; i < camera.width; i++)
+            for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
-                for (int j = 0; j < camera.height; j++)
+                for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
                     double distance = Double.PositiveInfinity;
-                    Figure nearestFigure = figures[0];
-                    for (int k = 0; k < figures.Count; k++)
+                    Figure nearestFigure = scene.figuresOnScene[0];
+                    for (int k = 0; k < scene.figuresOnScene.Count; k++)
                     {
-                        if (figures[k].IsIntersects(camera.ray(i, j)))
+                        if (scene.figuresOnScene[k].IsIntersects(scene.cameraOnScene.ray(i, j)))
                         {
-                            Vector distanceVector = new Vector(camera.cameraOrigin, figures[k].IntersectionPoint(camera.ray(i, j)));
+                            Vector distanceVector = new Vector(scene.cameraOnScene.cameraOrigin, scene.figuresOnScene[k].IntersectionPoint(scene.cameraOnScene.ray(i, j)));
 
                             if (distanceVector.Length() < distance)
                             {
-                                nearestFigure = figures[k];
+                                nearestFigure = scene.figuresOnScene[k];
                                 distance = distanceVector.Length();
                             }
                         }
                     }
 
-                    if (nearestFigure.IsIntersects(camera.ray(i, j)))
+                    if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                     {
-                        Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(camera.ray(i, j)));
+                        Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                         double lightDot = Vector.Dot(norm, lightReverseVector);
                         if (lightDot < 0) screenDrawer[i, j] = ' ';
                         else if ((lightDot >= 0) &&
@@ -94,9 +80,9 @@ namespace GraphicLabs.Tracing
                 }
             }
 
-            for (int i = 0; i < camera.width; i++)
+            for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
-                for (int j = 0; j < camera.height; j++)
+                for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
                     Console.Write(screenDrawer[i, j]);
                     Console.Write("  "); //for better picture
