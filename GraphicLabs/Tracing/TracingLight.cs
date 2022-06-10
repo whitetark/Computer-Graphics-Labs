@@ -12,14 +12,29 @@ namespace GraphicLabs.Tracing
 {
     public class TracingLight
     {
-        
+        private Figure FindNearest(Scene scene, int i, int j)
+        {
+            Figure nearestFigure = scene.figuresOnScene[0];
+            double distance = Double.PositiveInfinity;
+            for (int k = 0; k < scene.figuresOnScene.Count; k++)
+            {
+                if (scene.figuresOnScene[k].IsIntersects(scene.cameraOnScene.ray(i, j)))
+                {
+                    Vector distanceVector = new Vector(scene.cameraOnScene.cameraOrigin, scene.figuresOnScene[k].IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+
+                    if (distanceVector.Length() < distance)
+                    {
+                        nearestFigure = scene.figuresOnScene[k];
+                        distance = distanceVector.Length();
+                    }
+                }
+            }
+
+            return nearestFigure;
+        }
 
         public void Trace(Scene scene)
         {
-           
-
-
-
             char[,] screenDrawer = new char[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
             Vector lightReverseVector = new Vector(0, 0, 0) - scene.dirLight.Direction;
@@ -47,21 +62,8 @@ namespace GraphicLabs.Tracing
             {
                 for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
-                    double distance = Double.PositiveInfinity;
-                    Figure nearestFigure = scene.figuresOnScene[0];
-                    for (int k = 0; k < scene.figuresOnScene.Count; k++)
-                    {
-                        if (scene.figuresOnScene[k].IsIntersects(scene.cameraOnScene.ray(i, j)))
-                        {
-                            Vector distanceVector = new Vector(scene.cameraOnScene.cameraOrigin, scene.figuresOnScene[k].IntersectionPoint(scene.cameraOnScene.ray(i, j)));
 
-                            if (distanceVector.Length() < distance)
-                            {
-                                nearestFigure = scene.figuresOnScene[k];
-                                distance = distanceVector.Length();
-                            }
-                        }
-                    }
+                    Figure nearestFigure = FindNearest(scene, i, j);
 
                     if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                     {
