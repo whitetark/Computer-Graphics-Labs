@@ -23,15 +23,15 @@ namespace GraphicLabs.Tracing
 
             List<Figure> figures = new List<Figure>();
             figures.Add(testSphere);
-            figures.Add(testSphere2); //
+            //figures.Add(testSphere2); //
             scene.addFigure(testSphere);
-            scene.addFigure(testSphere2);
-            figures.Add(testSphere2); //
+            //scene.addFigure(testSphere2);
+            //figures.Add(testSphere2); //
             figures.Add(testTriangle);
             scene.addFigure(testTriangle);
-            scene.addFigure(testPlane);
+            //scene.addFigure(testPlane);
 
-            figures.Add(testPlane); //
+            //figures.Add(testPlane); //
 
             char[,] screenDrawer = new char[camera.width, camera.height];
 
