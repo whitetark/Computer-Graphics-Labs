@@ -12,12 +12,18 @@ namespace GraphicLabs.SceneStuff
     {
         public List<Figure> figuresOnScene = new List<Figure>();
         public Camera cameraOnScene { get; set; }
+        public DirectionalLight dirLight { get; set; }
 
-
-        public Scene(Camera camera, List<Figure> figures)
+        public Scene() { }
+        public Scene(Camera camera)
         {
             cameraOnScene = camera;
+        }
+        public Scene(Camera camera,List<Figure> figures, DirectionalLight directionLight):this(camera)    
+        {
+            
             figuresOnScene = figures;
+            dirLight = directionLight;
         }
 
         public void addFigure(Figure figure)
