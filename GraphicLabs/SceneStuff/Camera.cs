@@ -12,7 +12,7 @@ namespace GraphicLabs.SceneStuff
         public Point cameraOrigin { get; set; }
         
         private Vector vectorDirection;
-        private Point screenOrigin;
+            //private Point screenOrigin;
 
         private double fov = 60;
         
@@ -25,7 +25,7 @@ namespace GraphicLabs.SceneStuff
             cameraOrigin = new Point(x, y, z);
             vectorDirection = new Vector(X, Y, Z);
 
-            screenOrigin = vectorDirection.Normalize() + cameraOrigin;
+            //screenOrigin = vectorDirection.Normalize() + cameraOrigin;
 
             height = screenHeight;
             width = screenWidth;
@@ -39,7 +39,7 @@ namespace GraphicLabs.SceneStuff
             double pixelTransformY = (y + 0.5) / (double) height;
             
             double xPos = (2 * pixelTransformX  - 1) * halfFovTan;
-            double yPos = (1 - 2 * pixelTransformY) * halfFovTan;
+            double yPos = (1 - 2 * pixelTransformY) * halfFovTan / 3;
             if (width > height)
             {
                 imageAspectRatio = (double)width / (double)height;
