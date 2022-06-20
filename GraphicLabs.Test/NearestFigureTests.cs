@@ -56,9 +56,6 @@
             // assert
             Assert.That(result, Is.EqualTo(expected));
 
-
         }
-
-       
     }
 }

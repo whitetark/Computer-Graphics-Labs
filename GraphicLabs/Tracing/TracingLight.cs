@@ -32,7 +32,6 @@ namespace GraphicLabs.Tracing
 
             return nearestFigure;
         }
-
         private void ScreenDrawer(Camera camera, char[,] screenDrawer)
         {
             for(int i = 0; i < camera.width; i++)

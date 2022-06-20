@@ -22,7 +22,6 @@ namespace GraphicLabs.SceneStuff
 
             return trans * (scale * rotate);
         }
-
         private static Matrix CreateTranslationMatrix(double x, double y, double z)
         {
             Matrix transM = new Matrix();
