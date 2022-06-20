@@ -40,7 +40,6 @@ namespace GraphicLabs.Tracing
                 for (int j = 0; j < camera.height; j++)
                 {
                     Console.Write(screenDrawer[i, j]);
-                    //Console.Write("  "); //for better picture
                 }
                 Console.WriteLine();
             }
@@ -48,13 +47,22 @@ namespace GraphicLabs.Tracing
         public Scene createTestingScene()
         {
             Camera camera = new Camera(0, 0, 0, 0, 0, -1, 80, 80);
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, 0, -1) };
+            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(2, 1, -1) };
             Scene scene = new Scene(camera, lightSource);
 
             Sphere testSphere = new Sphere(new Point(0, 0, -8), 1);
             Sphere testSphere2 = new Sphere(new Point(0, 3, -12), 4);
             Triangle testTriangle = new Triangle(new Point(0, 0, -15), new Point(2, -1, -5), new Point(-1, 2, -5));
             Plane testPlane = new Plane(new Vector(0, 1, 1), new Point(0, 0, -7));
+
+            // Transformation Process
+            // First Row - t       x      y      z
+            // Secon Row - s      kx     ky     kz
+            // Third Row - r  angleX angleY angleZ
+            var transMatrix = Transformation.CreateTransformationMatrix(0, 0, 0,
+                                                                        1, 1, 1,
+                                                                        0, 0, 0);
+            testTriangle = testTriangle.Transform(transMatrix);
 
             scene.addFigure(testSphere);
             scene.addFigure(testTriangle);
@@ -88,9 +96,7 @@ namespace GraphicLabs.Tracing
                     }
                 }
             }
-
-
-            ScreenDrawer(scene.cameraOnScene, screenDrawer);
+           ScreenDrawer(scene.cameraOnScene, screenDrawer);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace GraphicLabs.Test
 {
-
     public class NearestFigureTests
     {
         [Test]

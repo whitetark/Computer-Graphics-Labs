@@ -93,5 +93,17 @@ namespace GraphicLabs.Figures
 
             return null;
         }
+        public override string ToString()
+        {
+            return $"Triangle(({A.X},{A.Y},{A.Z}),({B.X},{B.Y},{B.Z}),({C.X},{C.Y},{C.Z}))";
+        }
+
+        public Triangle Transform(Matrix matrix)
+        {
+            var a = A.Transform(matrix);
+            var b = B.Transform(matrix);
+            var c = C.Transform(matrix);
+            return new Triangle(a,b,c);
+        }
     }
 }

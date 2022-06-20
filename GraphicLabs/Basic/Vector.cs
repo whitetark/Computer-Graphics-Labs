@@ -24,7 +24,12 @@ namespace GraphicLabs.Basic
             Y = end.Y-start.Y;
             Z = end.Z-start.Z;
         }
-
+        public Vector()
+        {
+            X = 0;
+            Y = 0;
+            Z = 0;
+        }
         public double Length()
         {
             return Math.Sqrt(X * X + Y * Y + Z * Z);
@@ -66,6 +71,16 @@ namespace GraphicLabs.Basic
         public static Vector operator *(Vector n1, double number)
         {
             return new Vector(n1.X * number, n1.Y * number, n1.Z * number);
+        }
+
+        public Vector Transform(Matrix matrix)
+        {
+            Vector vector = new Vector(this.X, this.Y, this.Z);
+            Vector res = matrix * vector;
+
+            var transVector = new Vector(res.X, res.Y, res.Z);
+
+            return transVector;
         }
     }
 }
