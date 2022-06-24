@@ -36,7 +36,7 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingScene()
         {
-            Camera camera = new Camera(0, 0, 0, 0, 0, -1, 80, 80);
+            Camera camera = new Camera(0, 0, 0, 0, 0, -1, 200, 200);
             DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(2, 1, -1) };
             Scene scene = new Scene(camera, lightSource);
 
@@ -78,11 +78,11 @@ namespace GraphicLabs.Tracing
                         double lightDot = Vector.Dot(norm, lightReverseVector);
                         screenDrawer[i, j] = lightDot;
                     }
-                    else screenDrawer[i, j] = -1;
+                    else screenDrawer[i, j] = -10;
                 }
             }
 
-            IOutput pictureOutput = new ConsoleWriter();
+            IOutput pictureOutput = new PPMWriter();
             pictureOutput.Write(screenDrawer);
         }
     }
