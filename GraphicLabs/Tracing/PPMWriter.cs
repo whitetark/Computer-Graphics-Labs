@@ -19,8 +19,8 @@ public class PPMWriter:IOutput
                 if (picture[j, i] != -10)
                     file.Write((int) (toColor.X * Math.Abs(picture[j, i])) + " " +
                                (int) (toColor.Y * Math.Abs(picture[j, i])) + " " +
-                               (int) (toColor.Z * Math.Abs(picture[j, i])) + " ");
-                else file.Write("0   0  255");
+                               (int) (toColor.Z * Math.Abs(picture[j, i])));
+                else file.Write("0 0 255");
                 file.WriteLine();
             }
             
