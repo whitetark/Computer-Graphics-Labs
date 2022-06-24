@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GraphicLabs.Basic;
 using GraphicLabs.Figures;
 using GraphicLabs.SceneStuff;
+using GraphicLabs.Tracing;
 using GraphicLabs;
 
 namespace GraphicLabs.Tracing
@@ -32,17 +33,7 @@ namespace GraphicLabs.Tracing
 
             return nearestFigure;
         }
-        private void ScreenDrawer(Camera camera, char[,] screenDrawer)
-        {
-            for(int i = 0; i < camera.width; i++)
-            {
-                for (int j = 0; j < camera.height; j++)
-                {
-                    Console.Write(screenDrawer[i, j]);
-                }
-                Console.WriteLine();
-            }
-        }
+        
         public Scene createTestingScene()
         {
             Camera camera = new Camera(0, 0, 0, 0, 0, -1, 80, 80);
@@ -69,7 +60,7 @@ namespace GraphicLabs.Tracing
         }
         public void Trace(Scene scene)
         {
-            char[,] screenDrawer = new char[scene.cameraOnScene.width, scene.cameraOnScene.height];
+            double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
             Vector lightReverseVector = new Vector(0, 0, 0) - scene.dirLight.Direction;
 
@@ -82,20 +73,17 @@ namespace GraphicLabs.Tracing
 
                     if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                     {
-                        Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                        Vector norm =
+                            nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                         double lightDot = Vector.Dot(norm, lightReverseVector);
-                        if (lightDot < 0) screenDrawer[i, j] = ' ';
-                        else if ((lightDot >= 0) &&
-                            (lightDot < 0.2)) screenDrawer[i, j] = '.';
-                        else if ((lightDot >= 0.2) &&
-                            (lightDot < 0.5)) screenDrawer[i, j] = '*';
-                        else if ((lightDot >= 0.5) &&
-                            (lightDot < 0.8)) screenDrawer[i, j] = '0';
-                        else if (lightDot >= 0.8) screenDrawer[i, j] = '#';
+                        screenDrawer[i, j] = lightDot;
                     }
+                    else screenDrawer[i, j] = -1;
                 }
             }
-           ScreenDrawer(scene.cameraOnScene, screenDrawer);
+
+            IOutput pictureOutput = new ConsoleWriter();
+            pictureOutput.Write(screenDrawer);
         }
     }
 }
