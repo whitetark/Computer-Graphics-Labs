@@ -58,6 +58,22 @@ namespace GraphicLabs.Tracing
             scene.addFigure(testTriangle);
             return scene;
         }
+        public Scene createTestingSceneFromFile()
+        {
+            Camera camera = new Camera(0, 0, 0, 0, 0, -1, 500, 500);
+            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(2, 1, -1) };
+            Scene scene = new Scene(camera, lightSource);
+
+            OBJReader objreader = new OBJReader();
+            List<Figure> objects = objreader.getTriangles();
+
+            foreach (var o in objects)
+            {
+                scene.addFigure(o);
+            }
+
+            return scene;
+        }
         public void Trace(Scene scene)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];

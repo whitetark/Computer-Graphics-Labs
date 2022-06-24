@@ -15,9 +15,10 @@ namespace CompGraphics
         static void Main(string[] args)
         {
             TracingLight tracingLight = new TracingLight();
-            var scene = tracingLight.createTestingScene();
+            var scene = tracingLight.createTestingSceneFromFile();
             tracingLight.Trace(scene);
-            Console.ReadLine();
+            
+            Console.Write("Done!");
         }
     }
 }
