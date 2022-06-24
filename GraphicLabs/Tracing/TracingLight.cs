@@ -72,16 +72,27 @@ namespace GraphicLabs.Tracing
                     Figure nearestFigure = FindNearest(scene, i, j);
 
                     if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
-                    {
+                    {                        
                         Vector norm =
                             nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                         double lightDot = Vector.Dot(norm, lightReverseVector);
+                        Ray newDirRay = new Ray(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)), lightReverseVector);
+
                         screenDrawer[i, j] = lightDot;
+
+                        foreach (var obj in scene.figuresOnScene)
+                        {
+                            if (obj.IsIntersects(newDirRay))
+                            {
+                                screenDrawer[i, j] = 0;
+                            }
+                        }
                     }
                     else screenDrawer[i, j] = -10;
+                    
                 }
             }
-
+            
             IOutput pictureOutput = new PPMWriter();
             pictureOutput.Write(screenDrawer);
         }
