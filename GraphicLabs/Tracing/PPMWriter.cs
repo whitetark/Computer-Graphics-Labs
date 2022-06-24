@@ -12,15 +12,15 @@ public class PPMWriter:IOutput
         file.WriteLine(picture.GetUpperBound(0) + 1 + " " + (picture.GetUpperBound(1) + 1));
         file.WriteLine("255");
         file.WriteLine();
-        for(int i = 0; i < (picture.GetUpperBound(1) + 1); i++)
+        for(int i = picture.GetUpperBound(1); i >= 0; i--)
         {
-            for (int j = 0; j < (picture.GetUpperBound(0) + 1); j++)
+            for (int j = picture.GetUpperBound(0); j >=0 ; j--)
             {
                 if (picture[j, i] != -10)
                     file.Write((int) (toColor.X * Math.Abs(picture[j, i])) + " " +
                                (int) (toColor.Y * Math.Abs(picture[j, i])) + " " +
                                (int) (toColor.Z * Math.Abs(picture[j, i])) + " ");
-                else file.Write("0   0 255");
+                else file.Write("0   0  255");
                 file.WriteLine();
             }
             
