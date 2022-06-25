@@ -7,7 +7,7 @@ public class PPMWriter:IOutput
     public void Write(double[,] picture)
     {
         Vector toColor = new Vector(255.0, 255.0, 255.0);
-        StreamWriter file = new(@"C:\Users\Polya\Computer-Graphics-Labs\GraphicLabs\IOfiles\output.ppm");
+        StreamWriter file = new(@"D:\WebThings\Computer-Graphics-Labs\GraphicLabs\IOfiles\output.ppm");
         file.WriteLine("P3");
         file.WriteLine(picture.GetUpperBound(0) + 1 + " " + (picture.GetUpperBound(1) + 1));
         file.WriteLine("255");

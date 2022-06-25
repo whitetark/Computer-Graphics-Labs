@@ -61,20 +61,28 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile()
         {
-            Camera camera = new Camera(0, 0, -11, 0, 0, -1, 400, 400);
+            Camera camera = new Camera(0, 0, -11, 0, 0, -1, 500, 500);
             DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
             Scene scene = new Scene(camera, lightSource);
 
             OBJReader objreader = new OBJReader();
-            List<Figure> objects = objreader.getTriangles();
+            List<Triangle> objects = objreader.getTriangles();
 
+            // Transformation Process
+            // First Row - t       x      y      z
+            // Secon Row - s      kx     ky     kz
+            // Third Row - r  angleX angleY angleZ
+            var transMatrix = Transformation.CreateTransformationMatrix(0, 0, 0,
+                                                                        1, 1, 1,
+                                                                        270, 0, 135);
             foreach (var o in objects)
             {
-                scene.addFigure(o);
+                scene.addFigure(o.Transform(transMatrix));
             }
 
             return scene;
         }
+
         public void Trace(Scene scene)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
@@ -90,8 +98,7 @@ namespace GraphicLabs.Tracing
 
                     if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                     {                        
-                        Vector norm =
-                            nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                        Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                         double lightDot = Vector.Dot(norm, lightReverseVector);
                         Ray newDirRay = new Ray( (norm * 0.1)+ (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))), lightReverseVector);
 

@@ -13,13 +13,13 @@ namespace GraphicLabs.Tracing;
 
 public class OBJReader
 {
-    public List<Figure> getTriangles()
+    public List<Triangle> getTriangles()
     {
         NumberFormatInfo provider = new NumberFormatInfo();
         provider.NumberDecimalSeparator = ".";
-        List<Figure> triangles = new List<Figure>();;
+        List<Triangle> triangles = new List<Triangle>();;
         List<Point> points = new List<Point>();;
-        string[] lines = System.IO.File.ReadAllLines(@"C:\Users\Polya\Computer-Graphics-Labs\GraphicLabs\IOfiles\cow.obj");
+        string[] lines = System.IO.File.ReadAllLines(@"D:\WebThings\Computer-Graphics-Labs\GraphicLabs\IOfiles\cow.obj");
         
         foreach (string line in lines)
         {
