@@ -4,10 +4,15 @@ namespace GraphicLabs.Tracing;
 
 public class PPMWriter:IOutput
 {
+    public string PPMFile { get; set; }
+    public PPMWriter(string PPM)
+    {
+        PPMFile = PPM;
+    }
     public void Write(double[,] picture)
     {
         Vector toColor = new Vector(255.0, 255.0, 255.0);
-        StreamWriter file = new(@"..\..\..\IOFiles\output.ppm");
+        StreamWriter file = new(@$"..\..\..\IOFiles\{PPMFile}");
         file.WriteLine("P3");
         file.WriteLine(picture.GetUpperBound(0) + 1 + " " + (picture.GetUpperBound(1) + 1));
         file.WriteLine("255");

@@ -8,18 +8,26 @@ using GraphicLabs.Basic;
 using GraphicLabs.Figures;
 using GraphicLabs.SceneStuff;
 using GraphicLabs.Tracing;
+using System.IO;
 using GraphicLabs;
 namespace GraphicLabs.Tracing;
 
 public class OBJReader
 {
+    private string filePath { get; set; }
+
+    public OBJReader(string file)
+    {
+        filePath = file;
+    }
     public List<Triangle> getTriangles()
     {
         NumberFormatInfo provider = new NumberFormatInfo();
         provider.NumberDecimalSeparator = ".";
-        List<Triangle> triangles = new List<Triangle>();;
-        List<Point> points = new List<Point>();;
-        string[] lines = System.IO.File.ReadAllLines(@"..\..\..\IOFiles\cow.obj");
+        List<Triangle> triangles = new List<Triangle>();
+        
+        List<Point> points = new List<Point>();
+        string[] lines = File.ReadAllLines(@$"..\..\..\IOFiles\{filePath}");
         
         foreach (string line in lines)
         {
@@ -40,6 +48,7 @@ public class OBJReader
                 triangles.Add(new Triangle(points[a-1], points[b-1], points[c-1]));
             }
         }
+        
         return triangles;
     }
     

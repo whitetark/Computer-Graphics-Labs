@@ -59,18 +59,18 @@ namespace GraphicLabs.Tracing
             return scene;
         }
         
-        public Scene createTestingSceneFromFile()
+        public Scene createTestingSceneFromFile(string source)
         {
             Camera camera = new Camera(0, 0, -11, 0, 0, -1, 50, 50);
             DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
             Scene scene = new Scene(camera, lightSource);
 
-            OBJReader objreader = new OBJReader();
+            OBJReader objreader = new OBJReader(source);
             List<Triangle> objects = objreader.getTriangles();
 
             // Transformation Process
             // First Row - t       x      y      z
-            // Secon Row - s      kx     ky     kz
+            // Secon Row - s      kx     ky     kzS
             // Third Row - r  angleX angleY angleZ
             var transMatrix = Transformation.CreateTransformationMatrix(0, 0, 0,
                                                                         1, 1, 1,
@@ -83,7 +83,7 @@ namespace GraphicLabs.Tracing
             return scene;
         }
 
-        public void Trace(Scene scene)
+        public double[,] Trace(Scene scene)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
@@ -117,9 +117,8 @@ namespace GraphicLabs.Tracing
                     
                 }
             }
-            
-            IOutput pictureOutput = new PPMWriter();
-            pictureOutput.Write(screenDrawer);
+            return screenDrawer;
+
         }
     }
 }
