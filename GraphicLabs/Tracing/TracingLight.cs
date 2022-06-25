@@ -58,10 +58,11 @@ namespace GraphicLabs.Tracing
             scene.addFigure(testTriangle);
             return scene;
         }
+        
         public Scene createTestingSceneFromFile()
         {
-            Camera camera = new Camera(0, 0, 0, 0, 0, -1, 500, 500);
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(2, 1, -1) };
+            Camera camera = new Camera(0, 0, -11, 0, 0, -1, 400, 400);
+            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
             Scene scene = new Scene(camera, lightSource);
 
             OBJReader objreader = new OBJReader();
@@ -92,7 +93,7 @@ namespace GraphicLabs.Tracing
                         Vector norm =
                             nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                         double lightDot = Vector.Dot(norm, lightReverseVector);
-                        Ray newDirRay = new Ray(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)), lightReverseVector);
+                        Ray newDirRay = new Ray( (norm * 0.1)+ (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))), lightReverseVector);
 
                         screenDrawer[i, j] = lightDot;
 
@@ -101,6 +102,7 @@ namespace GraphicLabs.Tracing
                             if (obj.IsIntersects(newDirRay))
                             {
                                 screenDrawer[i, j] = 0;
+                                break;
                             }
                         }
                     }
