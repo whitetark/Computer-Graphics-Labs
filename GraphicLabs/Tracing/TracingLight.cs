@@ -61,7 +61,7 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile()
         {
-            Camera camera = new Camera(0, 0, -11, 0, 0, -1, 500, 500);
+            Camera camera = new Camera(0, 0, -11, 0, 0, -1, 50, 50);
             DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
             Scene scene = new Scene(camera, lightSource);
 

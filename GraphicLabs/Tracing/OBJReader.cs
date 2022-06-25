@@ -19,7 +19,7 @@ public class OBJReader
         provider.NumberDecimalSeparator = ".";
         List<Triangle> triangles = new List<Triangle>();;
         List<Point> points = new List<Point>();;
-        string[] lines = System.IO.File.ReadAllLines(@"D:\WebThings\Computer-Graphics-Labs\GraphicLabs\IOfiles\cow.obj");
+        string[] lines = System.IO.File.ReadAllLines(@"..\..\..\IOFiles\cow.obj");
         
         foreach (string line in lines)
         {
