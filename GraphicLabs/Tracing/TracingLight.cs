@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GraphicLabs.Basic;
+using GraphicLabs.Tree;
 using GraphicLabs.Figures;
 using GraphicLabs.SceneStuff;
 using GraphicLabs.Tracing;
@@ -66,7 +67,8 @@ namespace GraphicLabs.Tracing
             Scene scene = new Scene(camera, lightSource);
 
             OBJReader objreader = new OBJReader(source);
-            List<Triangle> objects = objreader.getTriangles();
+            List<Point> initialPoints = objreader.getPoints();
+            List<Point> points = new List<Point>();
 
             // Transformation Process
             // First Row - t       x      y      z
@@ -77,9 +79,16 @@ namespace GraphicLabs.Tracing
                                                                         270, 0, 135);
             
             
+            foreach (var p in initialPoints)
+            {
+                points.Add(p.Transform(transMatrix));
+                
+            }
+            List<Triangle> objects = objreader.getTriangles(points);
+            
             foreach (var o in objects)
             {
-                scene.addFigure(o.Transform(transMatrix));
+                scene.addFigure(o);
                 
             }
 

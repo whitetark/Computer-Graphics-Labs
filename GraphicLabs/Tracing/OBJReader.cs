@@ -15,20 +15,19 @@ namespace GraphicLabs.Tracing;
 public class OBJReader
 {
     private string filePath { get; set; }
+    private string[] lines;
 
     public OBJReader(string file)
     {
         filePath = file;
+        lines = File.ReadAllLines(@$"..\..\..\IOFiles\{filePath}");
     }
-    public List<Triangle> getTriangles()
+    public List<Point> getPoints()
     {
         NumberFormatInfo provider = new NumberFormatInfo();
         provider.NumberDecimalSeparator = ".";
-        List<Triangle> triangles = new List<Triangle>();
         
         List<Point> points = new List<Point>();
-        string[] lines = File.ReadAllLines(@$"..\..\..\IOFiles\{filePath}");
-
         
         foreach (string line in lines)
         {
@@ -40,6 +39,12 @@ public class OBJReader
             }
         }
 
+        return points;
+    }
+    public List<Triangle> getTriangles(List<Point> points)
+    {
+        List<Triangle> triangles = new List<Triangle>();
+        
         foreach (string line in lines)
         {
             if (line.Split(' ')[0] == "f")

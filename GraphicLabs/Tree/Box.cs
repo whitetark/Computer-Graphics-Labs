@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GraphicLabs.SceneStuff
+namespace GraphicLabs.Tree
 {
     public class Box
     {
