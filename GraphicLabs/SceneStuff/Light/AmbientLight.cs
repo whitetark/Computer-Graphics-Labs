@@ -9,12 +9,15 @@ namespace GraphicLabs.SceneStuff.Light
 {
     public class AmbientLight : ILight
     {
-        public List<Vector> directions { get; set; }
         public Color color { get; set; }
         public double intensity { get; set; }
 
         public AmbientLight(Color color, double intensity)
         {
+            if(intensity > 1)
+            {
+                intensity = 1;
+            }
             this.color = color;
             this.intensity = intensity;
         }
@@ -24,10 +27,13 @@ namespace GraphicLabs.SceneStuff.Light
             intensity = 1;
         }
 
-        //private List<Vector> generateDirections()
-        //{
-
-        //}
+        public Vector generateDirection(Vector normal, Point intersectionPoint)
+        {
+            Random rnd = new Random();
+            var direction = new Vector(rnd.NextDouble() * 5, rnd.NextDouble() * 5, rnd.NextDouble() * 5);
+            if(0> Vector.Dot(direction, normal)) { direction *= -1; }
+            return direction;
+        }
         public Color currColor()
         {
             return color * intensity;

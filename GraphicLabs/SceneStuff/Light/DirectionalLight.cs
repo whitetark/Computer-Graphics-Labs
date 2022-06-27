@@ -9,23 +9,31 @@ namespace GraphicLabs.SceneStuff.Light
 {
     public class DirectionalLight : ILight
     {
-        public List<Vector> directions { get; set; }
+        public Vector direction { get; set; }
         public Color color { get; set; }
         public double intensity { get; set; }
 
         public DirectionalLight(Vector direction, Color color, double intensity)
         {
-            directions[0] = direction.Normalize();
+            if (intensity > 1)
+            {
+                intensity = 1;
+            }
+            direction = direction.Normalize();
             this.color = color;
             this.intensity = intensity;
         }
         public DirectionalLight(Vector direction)
         {
-            directions[0] = direction.Normalize();
+            direction = direction.Normalize();
             color = new Color(255, 255, 255);
             intensity = 1;
         }
 
+        public Vector generateDirection(Vector normal, Point intersectionPoint)
+        {
+            return direction * -1;
+        }
         public Color currColor()
         {
             return color * intensity;

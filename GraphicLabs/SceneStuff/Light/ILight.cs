@@ -11,7 +11,7 @@ namespace GraphicLabs.SceneStuff.Light
     {
         public Color color { get; set; }
         public double intensity { get; set; }
-        public List<Vector> directions { get; set; }
+        public Vector generateDirection(Vector normal, Point intersectionPoint);
         public Color currColor();
     }
 }

@@ -9,25 +9,31 @@ namespace GraphicLabs.SceneStuff.Light
 {
     public class PointLight : ILight
     {
-        public List<Vector> directions { get; set; }
         public Color color { get; set; }
         public double intensity { get; set; }
+        public Point origin { get; set; }
 
-        public PointLight(Color color, double intensity)
+        public PointLight(Point point, Color color, double intensity)
         {
+            if (intensity > 1)
+            {
+                intensity = 1;
+            }
+            origin = point;
             this.color = color;
             this.intensity = intensity;
         }
         public PointLight()
         {
+            origin = new Point(0, 0, 0);
             color = new Color(255, 255, 255);
             intensity = 1;
         }
 
-        //private List<Vector> generateDirections()
-        //{
-
-        //}
+        public Vector generateDirection(Vector normal, Point intersectionPoint)
+        {
+            return origin - intersectionPoint;
+        }
         public Color currColor()
         {
             return color * intensity;

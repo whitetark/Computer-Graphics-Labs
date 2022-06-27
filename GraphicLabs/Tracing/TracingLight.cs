@@ -79,18 +79,15 @@ namespace GraphicLabs.Tracing
                                                                         1, 1, 1,
                                                                         270, 0, 135);
             
-            
             foreach (var p in initialPoints)
             {
                 points.Add(p.Transform(transMatrix));
-                
             }
             List<Triangle> objects = objreader.getTriangles(points);
             
             foreach (var o in objects)
             {
                 scene.addFigure(o);
-                
             }
 
             return scene;
@@ -170,11 +167,9 @@ namespace GraphicLabs.Tracing
                     {
                         screenDrawer[i, j] = -10;
                     }
-
                 }
             }
             return screenDrawer;
-
         }
     }
 }

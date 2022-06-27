@@ -28,7 +28,6 @@ public class PPMWriter:IOutput
                 else file.Write("0 0 255");
                 file.WriteLine();
             }
-            
         }
         file.Flush();
         file.Close();
