@@ -9,6 +9,7 @@ using GraphicLabs.Figures;
 using GraphicLabs.SceneStuff;
 using GraphicLabs.Tracing;
 using GraphicLabs;
+using GraphicLabs.SceneStuff.Light;
 
 namespace GraphicLabs.Tracing
 {
@@ -38,7 +39,7 @@ namespace GraphicLabs.Tracing
         public Scene createTestingScene()
         {
             Camera camera = new Camera(0, 0, 0, 0, 0, -1, 200, 100);
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(2, 1, -1) };
+            ILight lightSource = new DirectionalLight(new Vector(2, 1, -1));
             Scene scene = new Scene(camera, lightSource);
 
             Sphere testSphere = new Sphere(new Point(0, 0, -8), 1);
@@ -63,7 +64,7 @@ namespace GraphicLabs.Tracing
         public Scene createTestingSceneFromFile(string source)
         {
             Camera camera = new Camera(0, 0, -11, 0, 0, -1, 100, 100);
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
+            DirectionalLight lightSource = new DirectionalLight(new Vector(0, -1, 1));
             Scene scene = new Scene(camera, lightSource);
 
             OBJReader objreader = new OBJReader(source);
@@ -99,7 +100,7 @@ namespace GraphicLabs.Tracing
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
-            Vector lightReverseVector = new Vector(0, 0, 0) - scene.dirLight.Direction;
+            Vector lightReverseVector = new Vector(0, 0, 0) - scene.light.direction;
             List<double> Xlist = new List<double>();
             List<double> Ylist = new List<double>();
             List<double> Zlist = new List<double>();

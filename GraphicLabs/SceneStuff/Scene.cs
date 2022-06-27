@@ -5,6 +5,7 @@ using System.Text;
 using GraphicLabs.Figures;
 using System.Threading.Tasks;
 using GraphicLabs.Basic;
+using GraphicLabs.SceneStuff.Light;
 
 namespace GraphicLabs.SceneStuff
 {
@@ -12,16 +13,16 @@ namespace GraphicLabs.SceneStuff
     {
         public List<Figure> figuresOnScene = new List<Figure>();
         public Camera cameraOnScene { get; set; }
-        public DirectionalLight dirLight { get; set; }
+        public ILight light { get; set; }
 
         public Scene() { }
         public Scene(Camera camera)
         {
             cameraOnScene = camera;
         }
-        public Scene(Camera camera, DirectionalLight directionLight):this(camera)    
+        public Scene(Camera camera, ILight light):this(camera)    
         {
-            dirLight = directionLight;
+            this.light = light;
         }
 
         public void addFigure(Figure figure)
