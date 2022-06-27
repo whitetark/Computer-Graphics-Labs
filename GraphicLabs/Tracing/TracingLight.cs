@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GraphicLabs.Basic;
 using GraphicLabs.Figures;
 using GraphicLabs.SceneStuff;
+using GraphicLabs.Tracing;
 using GraphicLabs;
 
 namespace GraphicLabs.Tracing
@@ -32,23 +33,11 @@ namespace GraphicLabs.Tracing
 
             return nearestFigure;
         }
-
-        private void ScreenDrawer(Camera camera, char[,] screenDrawer)
-        {
-            for(int i = 0; i < camera.width; i++)
-            {
-                for (int j = 0; j < camera.height; j++)
-                {
-                    Console.Write(screenDrawer[i, j]);
-                    //Console.Write("  "); //for better picture
-                }
-                Console.WriteLine();
-            }
-        }
+        
         public Scene createTestingScene()
         {
-            Camera camera = new Camera(0, 0, 0, 0, 0, -1, 80, 80);
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, 0, -1) };
+            Camera camera = new Camera(0, 0, 0, 0, 0, -1, 200, 100);
+            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(2, 1, -1) };
             Scene scene = new Scene(camera, lightSource);
 
             Sphere testSphere = new Sphere(new Point(0, 0, -8), 1);
@@ -56,13 +45,47 @@ namespace GraphicLabs.Tracing
             Triangle testTriangle = new Triangle(new Point(0, 0, -15), new Point(2, -1, -5), new Point(-1, 2, -5));
             Plane testPlane = new Plane(new Vector(0, 1, 1), new Point(0, 0, -7));
 
+            // Transformation Process
+            // First Row - t       x      y      z
+            // Secon Row - s      kx     ky     kz
+            // Third Row - r  angleX angleY angleZ
+            var transMatrix = Transformation.CreateTransformationMatrix(0, 0, 0,
+                                                                        1, 1, 1,
+                                                                        0, 0, 0);
+            testTriangle = testTriangle.Transform(transMatrix);
+
             scene.addFigure(testSphere);
             scene.addFigure(testTriangle);
             return scene;
         }
-        public void Trace(Scene scene)
+        
+        public Scene createTestingSceneFromFile(string source)
         {
-            char[,] screenDrawer = new char[scene.cameraOnScene.width, scene.cameraOnScene.height];
+            Camera camera = new Camera(0, 0, -11, 0, 0, -1, 50, 50);
+            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
+            Scene scene = new Scene(camera, lightSource);
+
+            OBJReader objreader = new OBJReader(source);
+            List<Triangle> objects = objreader.getTriangles();
+
+            // Transformation Process
+            // First Row - t       x      y      z
+            // Secon Row - s      kx     ky     kzS
+            // Third Row - r  angleX angleY angleZ
+            var transMatrix = Transformation.CreateTransformationMatrix(0, 0, 0,
+                                                                        1, 1, 1,
+                                                                        270, 0, 135);
+            foreach (var o in objects)
+            {
+                scene.addFigure(o.Transform(transMatrix));
+            }
+
+            return scene;
+        }
+
+        public double[,] Trace(Scene scene)
+        {
+            double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
             Vector lightReverseVector = new Vector(0, 0, 0) - scene.dirLight.Direction;
 
@@ -74,23 +97,28 @@ namespace GraphicLabs.Tracing
                     Figure nearestFigure = FindNearest(scene, i, j);
 
                     if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
-                    {
+                    {                        
                         Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                         double lightDot = Vector.Dot(norm, lightReverseVector);
-                        if (lightDot < 0) screenDrawer[i, j] = ' ';
-                        else if ((lightDot >= 0) &&
-                            (lightDot < 0.2)) screenDrawer[i, j] = '.';
-                        else if ((lightDot >= 0.2) &&
-                            (lightDot < 0.5)) screenDrawer[i, j] = '*';
-                        else if ((lightDot >= 0.5) &&
-                            (lightDot < 0.8)) screenDrawer[i, j] = '0';
-                        else if (lightDot >= 0.8) screenDrawer[i, j] = '#';
+                        Ray newDirRay = new Ray( (norm * 0.1)+ (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))), lightReverseVector);
+
+                        screenDrawer[i, j] = lightDot;
+
+                        foreach (var obj in scene.figuresOnScene)
+                        {
+                            if (obj.IsIntersects(newDirRay))
+                            {
+                                screenDrawer[i, j] = 0;
+                                break;
+                            }
+                        }
                     }
+                    else screenDrawer[i, j] = -10;
+                    
                 }
             }
+            return screenDrawer;
 
-
-            ScreenDrawer(scene.cameraOnScene, screenDrawer);
         }
     }
 }

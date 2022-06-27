@@ -39,7 +39,7 @@ namespace GraphicLabs.SceneStuff
             double pixelTransformY = (y + 0.5) / (double) height;
             
             double xPos = (2 * pixelTransformX  - 1) * halfFovTan;
-            double yPos = (1 - 2 * pixelTransformY) * halfFovTan / 3;
+            double yPos = (1 - 2 * pixelTransformY) * halfFovTan;
             if (width > height)
             {
                 imageAspectRatio = (double)width / (double)height;

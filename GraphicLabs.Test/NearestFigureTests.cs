@@ -1,6 +1,5 @@
 ﻿namespace GraphicLabs.Test
 {
-
     public class NearestFigureTests
     {
         [Test]
@@ -57,9 +56,6 @@
             // assert
             Assert.That(result, Is.EqualTo(expected));
 
-
         }
-
-       
     }
 }

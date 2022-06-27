@@ -11,6 +11,7 @@ namespace GraphicLabs.Basic
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
+        public Vector Normal { get; set; }
 
         public Point(double x, double y, double z)
         {
@@ -34,6 +35,21 @@ namespace GraphicLabs.Basic
         public override string ToString()
         {
             return $"Point({X}, {Y}, {Z})";
+        }
+
+        public Point Transform(Matrix matrix)
+        {
+            Vector vector = new Vector(this.X, this.Y, this.Z);
+            Vector res = matrix * vector;
+
+            Point transPoint = new Point(res.X, res.Y, res.Z);
+            if (Normal != null)
+            {
+                vector = Normal.Transform(matrix).Normalize();
+            }
+            transPoint.Normal = vector;
+
+            return transPoint;
         }
     }
 }
