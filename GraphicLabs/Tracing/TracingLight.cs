@@ -13,58 +13,6 @@ namespace GraphicLabs.Tracing
 {
     public class TracingLight
     {
-        private bool intersect(double minx, double maxx, double miny, double maxy, double minz, double maxz, Ray r) 
-        { 
-            double tmin = (minx - r.Origin.X) / r.Direction.X; 
-            double tmax = (maxx - r.Origin.X) / r.Direction.X; 
- 
-            if (tmin > tmax)
-            {
-                double swap = tmin;
-                tmin = tmax;
-                tmax = swap;
-            }
- 
-            double tymin = (miny - r.Origin.Y) / r.Direction.Y; 
-            double tymax = (maxy - r.Origin.Y) / r.Direction.Y; 
- 
-            if (tymin > tymax)
-            {
-                double swap = tymin;
-                tymin = tymax;
-                tymax = swap;
-            }
- 
-            if ((tmin > tymax) || (tymin > tmax)) 
-                return false; 
- 
-            if (tymin > tmin) 
-                tmin = tymin; 
- 
-            if (tymax < tmax) 
-                tmax = tymax; 
- 
-            double tzmin = (minz - r.Origin.Z) / r.Direction.Z; 
-            double tzmax = (maxz - r.Origin.Z) / r.Direction.Z;
-
-            if (tzmin > tzmax)
-            {
-                double swap = tzmin;
-                tzmin = tzmax;
-                tzmax = swap;
-            }
-
-            if ((tmin > tzmax) || (tzmin > tmax)) 
-                return false; 
- 
-            if (tzmin > tmin) 
-                tmin = tzmin; 
- 
-            if (tzmax < tmax) 
-                tmax = tzmax; 
- 
-            return true; 
-        } 
         public Figure FindNearest(Scene scene, int i, int j)
         {
             Figure nearestFigure = scene.figuresOnScene[0];
@@ -176,11 +124,13 @@ namespace GraphicLabs.Tracing
             Console.WriteLine("MIN Z: " + minZ);
             Console.WriteLine("MAX Z: " + maxZ);
 
+            Box box = new Box(maxX, maxY, maxZ, minX, minY, minZ);
+            
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
                 for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
-                    if (intersect(minX, maxX, minY, maxY, minZ, maxZ, scene.cameraOnScene.ray(i, j)))
+                    if (box.IsIntersects(scene.cameraOnScene.ray(i, j)))
                     {
                         Figure nearestFigure = FindNearest(scene, i, j);
 
