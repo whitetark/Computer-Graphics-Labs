@@ -19,13 +19,13 @@ namespace GraphicLabs.SceneStuff.Light
             {
                 intensity = 1;
             }
-            direction = direction.Normalize();
+            this.direction = direction.Normalize();
             this.color = color;
             this.intensity = intensity;
         }
         public DirectionalLight(Vector direction)
         {
-            direction = direction.Normalize();
+            this.direction = direction.Normalize();
             color = new Color(255, 255, 255);
             intensity = 1;
         }

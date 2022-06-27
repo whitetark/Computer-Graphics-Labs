@@ -64,16 +64,18 @@ namespace GraphicLabs.Tracing
         public Scene createTestingSceneFromFile(string source)
         {
             Camera camera = new Camera(0, 0, -11, 0, 0, -1, 100, 100);
-            DirectionalLight lightSource = new DirectionalLight(new Vector(0, -1, 1));
+            //ILight lightSource = new DirectionalLight(new Vector(0, -1, 1));
+            //ILight lightSource = new PointLight(new Point(0, -1, 1));
+            ILight lightSource = new AmbientLight();
             Scene scene = new Scene(camera, lightSource);
-
+            Plane plane = new Plane(new Vector(0, 1, 0), new Point(-0.38, -0.32, -0.38));
             OBJReader objreader = new OBJReader(source);
             List<Point> initialPoints = objreader.getPoints();
             List<Point> points = new List<Point>();
 
             // Transformation Process
             // First Row - t       x      y      z
-            // Secon Row - s      kx     ky     kzS
+            // Secon Row - s      kx     ky     kz
             // Third Row - r  angleX angleY angleZ
             var transMatrix = Transformation.CreateTransformationMatrix(0, 0, 0,
                                                                         1, 1, 1,
@@ -90,6 +92,7 @@ namespace GraphicLabs.Tracing
                 scene.addFigure(o);
             }
 
+            scene.addFigure(plane);
             return scene;
         }
 
@@ -97,12 +100,20 @@ namespace GraphicLabs.Tracing
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
-            Vector lightReverseVector = new Vector(0, 0, 0) - scene.light.direction;
             List<double> Xlist = new List<double>();
             List<double> Ylist = new List<double>();
             List<double> Zlist = new List<double>();
             
-            foreach (Triangle o in scene.figuresOnScene)
+            var triangles = new List<Triangle>();
+            foreach(Figure o in scene.figuresOnScene)
+            {
+                if (o.Type == "Triangle")
+                {
+                    triangles.Add(o);
+                }
+            }
+
+            foreach (Triangle o in triangles)
             {
                 Xlist.Add(o.A.X);
                 Xlist.Add(o.B.X);
@@ -143,12 +154,11 @@ namespace GraphicLabs.Tracing
 
                         if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                         {
-                            Vector norm =
-                                nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                            var intersectionPoint = nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i,j));
+                            Vector norm = nearestFigure.GetNormal(intersectionPoint);
+                            var lightReverseVector = scene.light.generateDirection(norm, intersectionPoint);
                             double lightDot = Vector.Dot(norm, lightReverseVector);
-                            Ray newDirRay =
-                                new Ray((norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
-                                    lightReverseVector);
+                            Ray newDirRay = new Ray((norm * 0.001 + intersectionPoint), lightReverseVector);
 
                             screenDrawer[i, j] = lightDot;
 

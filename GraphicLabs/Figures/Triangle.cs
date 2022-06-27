@@ -12,7 +12,7 @@ namespace GraphicLabs.Figures
         public Point A { get; set; }
         public Point B { get; set; }
         public Point C { get; set; }
-
+        public string Type = "Triangle";
         public Triangle(Point a, Point b, Point c)
         {
             A = a;

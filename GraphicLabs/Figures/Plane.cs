@@ -11,6 +11,7 @@ namespace GraphicLabs.Figures
     {
         public Vector Normal { get; set; }
         public Point Center { get; set; }
+        public string Type = "Plane";
 
         public Plane(Vector normal, Point center)
         {

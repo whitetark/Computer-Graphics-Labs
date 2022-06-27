@@ -23,6 +23,12 @@ namespace GraphicLabs.SceneStuff.Light
             this.color = color;
             this.intensity = intensity;
         }
+        public PointLight(Point point)
+        {
+            origin = point;
+            color = new Color(255, 255, 255);
+            intensity = 1;
+        }
         public PointLight()
         {
             origin = new Point(0, 0, 0);

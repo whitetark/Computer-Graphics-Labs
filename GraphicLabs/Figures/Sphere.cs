@@ -11,7 +11,7 @@ namespace GraphicLabs.Figures
     {
         public Point Center { get; set; }
         public double Radius { get; set; }
-
+        public string Type = "Sphere";
         public Sphere(Point center, double radius)
         {
             Center = center;
