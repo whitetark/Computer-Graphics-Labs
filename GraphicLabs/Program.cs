@@ -18,12 +18,12 @@ namespace GraphicLabs
         {
             //Console.WriteLine(args[0]);
             //Console.WriteLine(args[1]);
-            var input = Starter.StarterProg(args);
+            /*var input = Starter.StarterProg(args);
             if (input == null)
             {
                 return;
-            }
-            //string[] input = { "cow.obj", "output.ppm" };
+            }*/
+            string[] input = { "cow.obj", "output.ppm" };
             TracingLight tracingLight = new TracingLight();
             
             var scene = tracingLight.createTestingSceneFromFile(input[0]);

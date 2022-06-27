@@ -28,6 +28,7 @@ public class OBJReader
         
         List<Point> points = new List<Point>();
         string[] lines = File.ReadAllLines(@$"..\..\..\IOFiles\{filePath}");
+
         
         foreach (string line in lines)
         {
@@ -35,9 +36,10 @@ public class OBJReader
             {
                 //Console.WriteLine((line.Split(' ')[1]));
                 points.Add(new Point(Convert.ToDouble(line.Split(' ')[1], provider), Convert.ToDouble(line.Split(' ')[2], provider), Convert.ToDouble(line.Split(' ')[3], provider)));
+                
             }
         }
-        
+
         foreach (string line in lines)
         {
             if (line.Split(' ')[0] == "f")
