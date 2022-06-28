@@ -12,6 +12,7 @@ namespace GraphicLabs.Figures
         public Point A { get; set; }
         public Point B { get; set; }
         public Point C { get; set; }
+        public Vector[] normals = new Vector[3];
         public Triangle(Point a, Point b, Point c)
         {
             A = a;
@@ -19,11 +20,24 @@ namespace GraphicLabs.Figures
             C = c;
         }
 
-        public override Vector GetNormal(Point point)
+        public override Vector[] GetNormal(Point point)
         {
-            Vector Vector1 = B - A;
-            Vector Vector2 = C - A;
-            return Vector.Cross(Vector1,Vector2).Normalize();
+            //Vector Vector1 = B - A;
+            //Vector Vector2 = C - A;
+            //return Vector.Cross(Vector1,Vector2).Normalize();
+            Vector[] normals = new Vector[3];
+            normals[0] = A.Normal;
+            normals[1] = B.Normal;
+            normals[2] = C.Normal;
+
+            //for (int i = 0; i<3; i++)
+            //{
+            //    if(normals[i] == null)
+            //    {
+            //        normals[i] = new Vector(0, 0, 0);
+            //    }
+            //}
+            return normals;
         }
 
         public override bool IsIntersects(Ray ray)
@@ -46,7 +60,7 @@ namespace GraphicLabs.Figures
             //Calculate distance from A to ray origin
             Vector k = ray.Origin - A;
 
-            double u = Vector.Dot(k,p) * invDet;
+            var u = Vector.Dot(k,p) * invDet;
             //Check for ray hit
             if (u < 0 || u > 1)
             { 
@@ -55,7 +69,7 @@ namespace GraphicLabs.Figures
 
             Vector q = Vector.Cross(k, Edge1);
 
-            double v = Vector.Dot(ray.Direction,q) * invDet;
+            var v = Vector.Dot(ray.Direction,q) * invDet;
             //Check for ray hit
             if (v < 0 || u + v > 1) { return false; }
 
@@ -91,6 +105,14 @@ namespace GraphicLabs.Figures
             }
 
             return null;
+        }
+        public Vector[] getNormals()
+        {
+            Vector[] normals = new Vector[2];
+            normals[0] = A.Normal;
+            normals[1] = B.Normal;
+            normals[2] = C.Normal;
+            return normals;
         }
         public override string ToString()
         {
