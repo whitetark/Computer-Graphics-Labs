@@ -1,8 +1,10 @@
-﻿namespace GraphicLabs.Tracing;
+﻿using GraphicLabs.SceneStuff.Light;
+
+namespace GraphicLabs.Tracing;
 
 public class ConsoleWriter:IOutput
 {
-    public void Write(double[,] picture)
+    public void Write(double[,] picture, ILight light)
     {
         for(int i = 0; i < picture.GetUpperBound(0) + 1; i++)
         {

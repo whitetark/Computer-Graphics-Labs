@@ -17,7 +17,6 @@ namespace GraphicLabs.Figures
         private double MinZ;
         public Point Center { get; set; }
         public double Radius { get; set; }
-
         public Sphere(Point center, double radius)
         {
             Center = center;
@@ -30,10 +29,12 @@ namespace GraphicLabs.Figures
             MinZ = Center.Z - Radius;
         }
 
-        public override Vector GetNormal(Point point)
+        public override Vector[] GetNormal(Point point)
         {
             Vector normal = new Vector(Center, point).Normalize();
-            return normal;
+            Vector[] normals = new Vector[1];
+            normals[0] = normal;
+            return normals;
         }
 
         public override bool IsIntersects(Ray ray)

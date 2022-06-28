@@ -20,7 +20,7 @@ namespace GraphicLabs.Figures
         public Point A { get; set; }
         public Point B { get; set; }
         public Point C { get; set; }
-
+        public Vector[] normals = new Vector[3];
         public Triangle(Point a, Point b, Point c)
         {
             A = a;
@@ -36,11 +36,24 @@ namespace GraphicLabs.Figures
             Center = new Point((A.X + B.X + C.X) / 3, (A.Y + B.Y + C.Y) / 3, (A.Z + B.Z + C.Z) / 3);
         }
 
-        public override Vector GetNormal(Point point)
+        public override Vector[] GetNormal(Point point)
         {
-            Vector Vector1 = B - A;
-            Vector Vector2 = C - A;
-            return Vector.Cross(Vector1, Vector2).Normalize();
+            //Vector Vector1 = B - A;
+            //Vector Vector2 = C - A;
+            //return Vector.Cross(Vector1,Vector2).Normalize();
+            Vector[] normals = new Vector[3];
+            normals[0] = A.Normal;
+            normals[1] = B.Normal;
+            normals[2] = C.Normal;
+
+            //for (int i = 0; i<3; i++)
+            //{
+            //    if(normals[i] == null)
+            //    {
+            //        normals[i] = new Vector(0, 0, 0);
+            //    }
+            //}
+            return normals;
         }
 
         public override bool IsIntersects(Ray ray)

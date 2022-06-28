@@ -9,6 +9,7 @@ using GraphicLabs.SceneStuff;
 using GraphicLabs.TreeStuff;
 using GraphicLabs.Tracing;
 using GraphicLabs;
+using GraphicLabs.SceneStuff.Light;
 
 namespace GraphicLabs.Tracing
 {
@@ -59,7 +60,7 @@ namespace GraphicLabs.Tracing
         public Scene createTestingScene()
         {
             Camera camera = new Camera(0, 0, 0, 0, 0, -1, 200, 100);
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(2, 1, -1) };
+            ILight lightSource = new DirectionalLight(new Vector(2, 1, -1));
             Scene scene = new Scene(camera, lightSource);
 
             Sphere testSphere = new Sphere(new Point(0, 0, -8), 1);
@@ -83,36 +84,38 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 0, -3, 100, 100);
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
+            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 200, 200);
+            //ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
+            ILight lightSource = new PointLight(new Point(0, 1, 1));
+            //ILight lightSource = new EnviromentLight();
             Scene scene = new Scene(camera, lightSource);
+            Triangle platform = new Triangle(new Point(5, 0.31989, 5), new Point(-5, 0.31989, 0), new Point(5, 0.31989, -5));
 
             OBJReader objreader = new OBJReader(source);
-            List<Point> initialPoints = objreader.getPoints();
+            List<Point> initialPoints = objreader.getPointsAndNormals();
             List<Point> points = new List<Point>();
 
             // Transformation Process
             // First Row - t       x      y      z
-            // Secon Row - s      kx     ky     kzS
+            // Secon Row - s      kx     ky     kz
             // Third Row - r  angleX angleY angleZ
             var transMatrix = Transformation.CreateTransformationMatrix(0, 0, 0,
                                                                         1, 1, 1,
                                                                         270, 0, 135);
             
-            
             foreach (var p in initialPoints)
             {
                 points.Add(p.Transform(transMatrix));
-                
             }
+            //platform.Transform(transMatrix);
             List<Triangle> objects = objreader.getTriangles(points);
             
             foreach (var o in objects)
             {
                 scene.addFigure(o);
-                
             }
 
+            //scene.addFigure(platform);
             return scene;
         }
 
@@ -120,7 +123,9 @@ namespace GraphicLabs.Tracing
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
-            Vector lightReverseVector = new Vector(0, 0, 0) - scene.dirLight.Direction;
+            List<double> Xlist = new List<double>();
+            List<double> Ylist = new List<double>();
+            List<double> Zlist = new List<double>();
             
             double minX = Double.MaxValue;
             double maxX = Double.MinValue;
@@ -207,17 +212,15 @@ namespace GraphicLabs.Tracing
                         {
                             Figure nearestFigure = FindNearest(scene, BVH.root.right.box.figures, i, j);
 
-                            if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                        if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                        {
+                            var intersectionPoint = nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i,j));
+                            var normals = nearestFigure.GetNormal(intersectionPoint);
+                            foreach (var norm in normals)
                             {
-                                Vector norm =
-                                    nearestFigure.GetNormal(
-                                        nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                                var lightReverseVector = scene.light.generateDirection(norm, intersectionPoint);
                                 double lightDot = Vector.Dot(norm, lightReverseVector);
-                                Ray newDirRay =
-                                    new Ray(
-                                        (norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
-                                        lightReverseVector);
-
+                                var newDirRay = new Ray(norm * 0.001 + intersectionPoint, lightReverseVector);
                                 screenDrawer[i, j] = lightDot;
 
                                 foreach (var obj in scene.figuresOnScene)
@@ -229,19 +232,14 @@ namespace GraphicLabs.Tracing
                                     }
                                 }
                             }
-                            else screenDrawer[i, j] = -10;
                         }
-                    } 
-                    else
-                    {
-                        screenDrawer[i, j] = -10;
+                        else screenDrawer[i, j] = -10;
                     }
-
+                    else screenDrawer[i, j] = -10;
                 }
                 
             }
             return screenDrawer;
-
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GraphicLabs.Basic;
+using GraphicLabs.SceneStuff.Light;
 using System.IO;
 namespace GraphicLabs.Tracing;
 
@@ -9,9 +10,12 @@ public class PPMWriter:IOutput
     {
         PPMFile = PPM;
     }
-    public void Write(double[,] picture)
+    public void Write(double[,] picture, ILight light)
     {
-        Vector toColor = new Vector(255.0, 255.0, 255.0);
+        Color color = light.currColor();
+        Color black = new Color(0, 0, 0);
+        var resColor = color + black;
+
         StreamWriter file = new(@$"..\..\..\IOFiles\{PPMFile}");
         file.WriteLine("P3");
         file.WriteLine(picture.GetUpperBound(0) + 1 + " " + (picture.GetUpperBound(1) + 1));
@@ -22,13 +26,12 @@ public class PPMWriter:IOutput
             for (int j = picture.GetUpperBound(0); j >=0 ; j--)
             {
                 if (picture[j, i] != -10)
-                    file.Write((int) (toColor.X * Math.Abs(picture[j, i])) + " " +
-                               (int) (toColor.Y * Math.Abs(picture[j, i])) + " " +
-                               (int) (toColor.Z * Math.Abs(picture[j, i])));
+                    file.Write((int) (resColor.r * Math.Abs(picture[j, i])) + " " +
+                               (int) (resColor.g * Math.Abs(picture[j, i])) + " " +
+                               (int) (resColor.b * Math.Abs(picture[j, i])));
                 else file.Write("0 0 255");
                 file.WriteLine();
             }
-            
         }
         file.Flush();
         file.Close();

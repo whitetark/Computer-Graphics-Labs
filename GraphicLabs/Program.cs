@@ -30,7 +30,7 @@ namespace GraphicLabs
             
             var screenDrawer = tracingLight.Trace(scene);
             IOutput pictureOutput = new PPMWriter(input[1]);
-            pictureOutput.Write(screenDrawer);
+            pictureOutput.Write(screenDrawer,scene.light);
             Console.Write("Done!");
         }
     }
