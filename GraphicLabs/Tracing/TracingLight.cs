@@ -69,8 +69,9 @@ namespace GraphicLabs.Tracing
             ILight lightSource = new EnviromentLight();
             Scene scene = new Scene(camera, lightSource);
             Triangle platform = new Triangle(new Point(5, 0.31989, 5), new Point(-5, 0.31989, 0), new Point(5, 0.31989, -5));
+
             OBJReader objreader = new OBJReader(source);
-            List<Point> initialPoints = objreader.getPoints();
+            List<Point> initialPoints = objreader.getPointsAndNormals();
             List<Point> points = new List<Point>();
 
             // Transformation Process
