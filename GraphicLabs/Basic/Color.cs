@@ -41,7 +41,11 @@ namespace GraphicLabs.Basic
             Color newColor = new Color((int)(color.r / intensity), (int)(color.g / intensity), (int)(color.b / intensity));
             return newColor;
         }
-
+        public static Color operator +(Color color1, Color color2)
+        {
+            Color newColor = new Color((color1.r + color2.r)/2, (color1.g + color2.g)/2, (color1.b + color2.b)/2);
+            return newColor;
+        }
         public override string ToString()
         {
             return $"RGB: {r}, {g}, {b}";
