@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GraphicLabs.Basic;
-using GraphicLabs.Tree;
 using GraphicLabs.Figures;
 using GraphicLabs.SceneStuff;
+using GraphicLabs.TreeStuff;
 using GraphicLabs.Tracing;
 using GraphicLabs;
 
@@ -83,7 +83,7 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 0, -3, 80, 80);
+            Camera camera = new Camera(0, 0, -11, 0, 0, -3, 100, 100);
             DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
             Scene scene = new Scene(camera, lightSource);
 
@@ -161,163 +161,22 @@ namespace GraphicLabs.Tracing
             Console.WriteLine("MAX Z: " + maxZ);
 
             Box box = new Box(maxX, maxY, maxZ, minX, minY, minZ);
-            //box.boxes = boxes;
-            
-            Box boxLeft;
-            Box boxRight;
-            List<Figure> figuresLeft = new List<Figure>();
-            List<Figure> figuresRight = new List<Figure>();
+            box.figures = scene.figuresOnScene;
 
-            double extX = maxX - minX;
-            double extY = maxY - minY;
-            double extZ = maxZ - minZ;
+            Tree BVH = new Tree(box);
             
-            double leftMinX = Double.MaxValue;
-            double leftMaxX = Double.MinValue;
-            double leftMinY = Double.MaxValue;
-            double leftMaxY = Double.MinValue;
-            double leftMinZ = Double.MaxValue;
-            double leftMaxZ = Double.MinValue;
-                    
-            double rightMinX = Double.MaxValue;
-            double rightMaxX = Double.MinValue;
-            double rightMinY = Double.MaxValue;
-            double rightMaxY = Double.MinValue;
-            double rightMinZ = Double.MaxValue;
-            double rightMaxZ = Double.MinValue;
-
-            if (extX > extY)
-            {
-                if (extX > extZ)
-                {
-                    double middleX = extX / 2;
-                    
-                    foreach (var b in scene.figuresOnScene)
-                    {
-                        if (b.GetCenter().X < middleX)
-                        {
-                            figuresLeft.Add(b);
-                            if (b.GetMaxX() > leftMaxX) leftMaxX = b.GetMaxX();
-                            if (b.GetMaxY() > leftMaxY) leftMaxY = b.GetMaxY();
-                            if (b.GetMaxZ() > leftMaxZ) leftMaxZ = b.GetMaxZ();
-                            if (b.GetMinX() < leftMinX) leftMinX = b.GetMinX();
-                            if (b.GetMinY() < leftMinY) leftMinY = b.GetMinY();
-                            if (b.GetMinZ() < leftMinZ) leftMinZ = b.GetMinZ();
-                        }
-                        else
-                        {
-                            figuresRight.Add(b);
-                            if (b.GetMaxX() > rightMaxX) rightMaxX = b.GetMaxX();
-                            if (b.GetMaxY() > rightMaxY) rightMaxY = b.GetMaxY();
-                            if (b.GetMaxZ() > rightMaxZ) rightMaxZ = b.GetMaxZ();
-                            if (b.GetMinX() < rightMinX) rightMinX = b.GetMinX();
-                            if (b.GetMinY() < rightMinY) rightMinY = b.GetMinY();
-                            if (b.GetMinZ() < rightMinZ) rightMinZ = b.GetMinZ();
-                        }
-                    }
-                }
-                else
-                {
-                    double middleZ = extZ / 2;
-                    
-                    foreach (var b in scene.figuresOnScene)
-                    {
-                        if (b.GetCenter().Z < middleZ)
-                        {
-                            figuresLeft.Add(b);
-                            if (b.GetMaxX() > leftMaxX) leftMaxX = b.GetMaxX();
-                            if (b.GetMaxY() > leftMaxY) leftMaxY = b.GetMaxY();
-                            if (b.GetMaxZ() > leftMaxZ) leftMaxZ = b.GetMaxZ();
-                            if (b.GetMinX() < leftMinX) leftMinX = b.GetMinX();
-                            if (b.GetMinY() < leftMinY) leftMinY = b.GetMinY();
-                            if (b.GetMinZ() < leftMinZ) leftMinZ = b.GetMinZ();
-                        }
-                        else
-                        {
-                            figuresRight.Add(b);
-                            if (b.GetMaxX() > rightMaxX) rightMaxX = b.GetMaxX();
-                            if (b.GetMaxY() > rightMaxY) rightMaxY = b.GetMaxY();
-                            if (b.GetMaxZ() > rightMaxZ) rightMaxZ = b.GetMaxZ();
-                            if (b.GetMinX() < rightMinX) rightMinX = b.GetMinX();
-                            if (b.GetMinY() < rightMinY) rightMinY = b.GetMinY();
-                            if (b.GetMinZ() < rightMinZ) rightMinZ = b.GetMinZ();
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (extY > extZ)
-                {
-                    double middleY = extY / 2;
-                    
-                    foreach (var b in scene.figuresOnScene)
-                    {
-                        if (b.GetCenter().Y < middleY)
-                        {
-                            figuresLeft.Add(b);
-                            if (b.GetMaxX() > leftMaxX) leftMaxX = b.GetMaxX();
-                            if (b.GetMaxY() > leftMaxY) leftMaxY = b.GetMaxY();
-                            if (b.GetMaxZ() > leftMaxZ) leftMaxZ = b.GetMaxZ();
-                            if (b.GetMinX() < leftMinX) leftMinX = b.GetMinX();
-                            if (b.GetMinY() < leftMinY) leftMinY = b.GetMinY();
-                            if (b.GetMinZ() < leftMinZ) leftMinZ = b.GetMinZ();
-                        }
-                        else
-                        {
-                            figuresRight.Add(b);
-                            if (b.GetMaxX() > rightMaxX) rightMaxX = b.GetMaxX();
-                            if (b.GetMaxY() > rightMaxY) rightMaxY = b.GetMaxY();
-                            if (b.GetMaxZ() > rightMaxZ) rightMaxZ = b.GetMaxZ();
-                            if (b.GetMinX() < rightMinX) rightMinX = b.GetMinX();
-                            if (b.GetMinY() < rightMinY) rightMinY = b.GetMinY();
-                            if (b.GetMinZ() < rightMinZ) rightMinZ = b.GetMinZ();
-                        }
-                    }
-                }
-                else
-                {
-                    double middleZ = extZ / 2;
-                    
-                    foreach (var b in scene.figuresOnScene)
-                    {
-                        if (b.GetCenter().Z < middleZ)
-                        {
-                            figuresLeft.Add(b);
-                            if (b.GetMaxX() > leftMaxX) leftMaxX = b.GetMaxX();
-                            if (b.GetMaxY() > leftMaxY) leftMaxY = b.GetMaxY();
-                            if (b.GetMaxZ() > leftMaxZ) leftMaxZ = b.GetMaxZ();
-                            if (b.GetMinX() < leftMinX) leftMinX = b.GetMinX();
-                            if (b.GetMinY() < leftMinY) leftMinY = b.GetMinY();
-                            if (b.GetMinZ() < leftMinZ) leftMinZ = b.GetMinZ();
-                        }
-                        else
-                        {
-                            figuresRight.Add(b);
-                            if (b.GetMaxX() > rightMaxX) rightMaxX = b.GetMaxX();
-                            if (b.GetMaxY() > rightMaxY) rightMaxY = b.GetMaxY();
-                            if (b.GetMaxZ() > rightMaxZ) rightMaxZ = b.GetMaxZ();
-                            if (b.GetMinX() < rightMinX) rightMinX = b.GetMinX();
-                            if (b.GetMinY() < rightMinY) rightMinY = b.GetMinY();
-                            if (b.GetMinZ() < rightMinZ) rightMinZ = b.GetMinZ();
-                        }
-                    }
-                }
-            }
             
-            boxLeft = new Box(leftMaxX, leftMaxY, leftMaxZ, leftMinX, leftMinY, leftMinZ);
-            boxLeft.figures = figuresLeft;
-            boxRight = new Box(rightMaxX, rightMaxY, rightMaxZ, rightMinX, rightMinY, rightMinZ);
-            boxRight.figures = figuresRight;
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
                 for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
-                    if (box.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                    if (BVH.root.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
                     {
-                        if (boxLeft.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                        //double t = 0;
+                        
+                        if (BVH.root.left.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
                         {
-                            Figure nearestFigure = FindNearest(scene, figuresLeft, i, j);
+                            Figure nearestFigure = FindNearest(scene, BVH.root.left.box.figures, i, j);
 
                             if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                             {
@@ -343,9 +202,10 @@ namespace GraphicLabs.Tracing
                             }
                             else screenDrawer[i, j] = -10;
                         }
-                        if (boxRight.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                        
+                        if (BVH.root.right.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
                         {
-                            Figure nearestFigure = FindNearest(scene, figuresRight, i, j);
+                            Figure nearestFigure = FindNearest(scene, BVH.root.right.box.figures, i, j);
 
                             if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                             {
@@ -371,13 +231,14 @@ namespace GraphicLabs.Tracing
                             }
                             else screenDrawer[i, j] = -10;
                         }
-                    }
+                    } 
                     else
                     {
                         screenDrawer[i, j] = -10;
                     }
 
                 }
+                
             }
             return screenDrawer;
 

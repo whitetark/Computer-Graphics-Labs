@@ -9,27 +9,27 @@ using GraphicLabs.SceneStuff;
 using GraphicLabs.Tracing;
 using GraphicLabs;
 
-namespace GraphicLabs.Tree
+namespace GraphicLabs.TreeStuff
 {
     public class Node
     {
-        public List<Box> boxes { get; set; }
         public Box box { get; set; }
         
         public Node left { get; set; }
         public Node right { get; set; }
         public Node parent { get; set; }
 
-        public Node(List<Box> b)
+        public Node()
         {
-            boxes = b;
             parent = null;
         }
         
-        public Node(List<Box> b, Node p)
+        public Node(Box b, Node p)
         {
-            boxes = b;
+            box = b;
             parent = p;
+            left = null;
+            right = null;
         }
         
     }
