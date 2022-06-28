@@ -63,9 +63,9 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 200, 200);
-            //ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
-            ILight lightSource = new PointLight(new Point(0, 1, 1));
+            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 1000, 1000);
+            ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
+            //ILight lightSource = new PointLight(new Point(0, 1, 1));
             //ILight lightSource = new EnviromentLight();
             Scene scene = new Scene(camera, lightSource);
             Triangle platform = new Triangle(new Point(5, 0.31989, 5), new Point(-5, 0.31989, 0), new Point(5, 0.31989, -5));
@@ -94,13 +94,14 @@ namespace GraphicLabs.Tracing
                 scene.addFigure(o);
             }
 
-            //scene.addFigure(platform);
+            scene.addFigure(platform);
             return scene;
         }
 
         public double[,] Trace(Scene scene)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
+            int samplesNum = 256;
 
             List<double> Xlist = new List<double>();
             List<double> Ylist = new List<double>();
@@ -148,23 +149,25 @@ namespace GraphicLabs.Tracing
                         if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                         {
                             var intersectionPoint = nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i,j));
-                            var normals = nearestFigure.GetNormal(intersectionPoint);
-                            foreach (var norm in normals)
-                            {
-                                var lightReverseVector = scene.light.generateDirection(norm, intersectionPoint);
-                                double lightDot = Vector.Dot(norm, lightReverseVector);
-                                var newDirRay = new Ray(norm * 0.001 + intersectionPoint, lightReverseVector);
-                                screenDrawer[i, j] = lightDot;
+                            var norm = nearestFigure.GetNormal(intersectionPoint);
 
-                                foreach (var obj in scene.figuresOnScene)
-                                {
-                                    if (obj.IsIntersects(newDirRay))
-                                    {
-                                        screenDrawer[i, j] = 0;
-                                        break;
-                                    }
-                                }
+                            for (int s = 0; s < samplesNum; s++) {
+                               var lightReverseVector = scene.light.getDirection(norm, intersectionPoint);
+                               double lightDot = Vector.Dot(norm, lightReverseVector);
+                               var newDirRay = new Ray(norm * 0.001 + intersectionPoint, lightReverseVector);
+                               screenDrawer[i, j] += lightDot;
+
+                               foreach (var obj in scene.figuresOnScene)
+                               {
+                                   if (obj.IsIntersects(newDirRay))
+                                   {
+                                      screenDrawer[i, j] = 0;
+                                      break;
+                                   }
+                               }
                             }
+                            screenDrawer[i, j] = screenDrawer[i, j] / samplesNum;
+
                         }
                         else screenDrawer[i, j] = -10;
                     }

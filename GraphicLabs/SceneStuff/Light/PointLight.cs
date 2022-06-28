@@ -36,11 +36,11 @@ namespace GraphicLabs.SceneStuff.Light
             intensity = 1;
         }
 
-        public Vector generateDirection(Vector normal, Point intersectionPoint)
+        public Vector getDirection(Vector normal, Point intersectionPoint)
         {
-            return (origin - intersectionPoint) * -1;
+            return (origin - intersectionPoint)*-1;
         }
-        public Color currColor()
+        public Color getColor()
         {
             return color * intensity;
         }

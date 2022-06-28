@@ -18,11 +18,9 @@ namespace GraphicLabs.Figures
             this.Center = center;
         }
 
-        public override Vector[] GetNormal(Point point)
+        public override Vector GetNormal(Point point)
         {
-            Vector[] normals = new Vector[1];
-            normals[0] = Normal;
-            return normals;
+            return Normal;
         }
 
         public override bool IsIntersects(Ray ray)
