@@ -7,32 +7,46 @@ using GraphicLabs.Basic;
 using GraphicLabs.SceneStuff;
 using GraphicLabs.SceneStuff.Light;
 
+
 namespace GraphicLabs.Materials
 {
     public class Lambert : IMaterial
     {
-        private readonly Vector _colorish;
-        private static readonly Vector whiteVector = new Vector(1f, 1f, 1f);
-        private static readonly Vector blackVector = new Vector(0f, 0f, 0f);
+        private readonly ITexture albedo;
 
-        public Lambert(Vector colorish)
+        public Lambert (Vector colorish)
         {
-            _colorish= colorish;
+            albedo = new SolidTexture(colorish);
         }
 
-        public ResultColor Calculate(Ray ray, Hit hit, Scene scene, int recursions=0)
+        public Lambert (ITexture texture)
         {
-            var shade = ShadeProccessing(scene, hit);
-
-            return new ResultColor(shade >= 0 ? Vector.Interpolation(_colorish, whiteVector, 0.8f*shade):Vector.Interpolation(_colorish, blackVector, -shade)); //тут еще думаю над методом
+            this.albedo = texture;
         }
 
-        public static float ShadeProccessing(Scene scene, Hit hit, Vector vec)
+
+        public static float RandomF()
         {
-            var ligthPercentage = 0f;
+            Random rnd=new Random();
+            return (float)rnd.NextDouble();
 
+        }
+        public static  Vector RandomUnitedVectors(Vector norm)
+        {
+            Vector vec;
+            do
+            {
+                vec = new Vector(2 * RandomF() - 1, 2 * RandomF() - 1, 2*RandomF()-1);
 
-            return ligthPercentage;
+            } while (Vector.Dot(norm, vec) <= 0);
+            return vec;
+        }
+        public bool Scatter(Ray ray, Hit hit, ref Vector vec, ref Ray scattered)
+        {
+            var reflected = hit.Normal + hit.vector + RandomUnitedVectors(hit.Normal);
+            vec = albedo.GetColor(hit.u, hit.v, hit.vector);
+            scattered = new Ray(hit.vector, reflected-hit.vector);
+            return true;
         }
 
     }
