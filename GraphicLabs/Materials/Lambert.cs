@@ -20,13 +20,14 @@ namespace GraphicLabs.Materials
             _colorish= colorish;
         }
 
-        public Color Calculate(Ray ray, Point intersection, Scene scene, int recursions)
+        public ResultColor Calculate(Ray ray, Hit hit, Scene scene, int recursions=0)
         {
-            var shade = ShadeProccessing(scene, intersection);
-            return new Color(/*надо будет тут кое-что уточнить*/);
+            var shade = ShadeProccessing(scene, hit);
+
+            return new ResultColor(shade >= 0 ? Vector.Interpolation(_colorish, whiteVector, 0.8f*shade):Vector.Interpolation(_colorish, blackVector, -shade)); //тут еще думаю над методом
         }
 
-        public static float ShadeProccessing(Scene scene, Point intersection)
+        public static float ShadeProccessing(Scene scene, Hit hit, Vector vec)
         {
             var ligthPercentage = 0f;
 

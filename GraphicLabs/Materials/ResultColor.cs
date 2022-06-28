@@ -3,10 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using GraphicLabs.SceneStuff;
+using GraphicLabs.Basic;
 namespace GraphicLabs.Materials
 {
-    internal class ResultColor
+    public class ResultColor
     {
+        public Vector color { get; set; }
+        public float dotLight { get; set; }
+        public ResultColor(Vector color, float dotLight)
+        {
+            this.color = color;
+            this.dotLight = dotLight;
+        }
     }
 }
