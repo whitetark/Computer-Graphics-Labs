@@ -14,7 +14,7 @@ namespace GraphicLabs.Tracing
 {
     public class TracingLight
     {
-        
+
         /*public Figure FindNearest(Scene scene, int i, int j)
         {
             Figure nearestFigure = scene.figuresOnScene[0];
@@ -35,7 +35,9 @@ namespace GraphicLabs.Tracing
 
             return nearestFigure;
         }*/
-        
+
+      
+
         public Figure FindNearest(Scene scene, List<Figure> figures, int i, int j)
         {
             Figure nearestFigure = figures[0];
@@ -103,8 +105,8 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 0, -3, 100, 100);
-            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
+            Camera camera = new Camera(0, 0, -11, 0, 0, -3, 300, 300);
+            DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(1, -1, 1) };
             Scene scene = new Scene(camera, lightSource);
 
             OBJReader objreader = new OBJReader(source);
@@ -149,20 +151,9 @@ namespace GraphicLabs.Tracing
             double minZ = Double.MaxValue;
             double maxZ = Double.MinValue;
 
-           // List<Box> boxes = new List<Box>();
             
             foreach (Figure o in scene.figuresOnScene)
             {
-                /*double currentMinX = Math.Min(o.C.X, Math.Min(o.A.X, o.B.X));
-                double currentMaxX = Math.Max(o.C.X, Math.Max(o.A.X, o.B.X));
-                
-                double currentMinY = Math.Min(o.C.Y, Math.Min(o.A.Y, o.B.Y));
-                double currentMaxY = Math.Max(o.C.Y, Math.Max(o.A.Y, o.B.Y));
-                
-                double currentMinZ = Math.Min(o.C.Z, Math.Min(o.A.Z, o.B.Z));
-                double currentMaxZ = Math.Max(o.C.Z, Math.Max(o.A.Z, o.B.Z));
-                */
-                //boxes.Add(new Box(o.GetMaxX(), o.GetMaxY(), o.GetMaxZ(), o.GetMinX(), o.GetMinY(), o.GetMinZ()));
 
                 if (o.GetMaxX() > maxX) maxX = o.GetMaxX();
                 if (o.GetMaxY() > maxY) maxY = o.GetMaxY();
@@ -187,23 +178,26 @@ namespace GraphicLabs.Tracing
             Console.WriteLine("num : " + BVH.root.box.figures.Count);
             Console.WriteLine("num left: " + BVH.root.left.box.figures.Count);
             Console.WriteLine("num right: " + BVH.root.right.box.figures.Count);
+            
+            Console.WriteLine("num right right: " + BVH.root.right.right.box.figures.Count);
 
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
                 for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
-                    Node curr_node = BVH.root;
+                    Node currNode = BVH.root;
                     double minT = double.MaxValue;
-
                     Figure nearestFigure = null;
 
-                    while (curr_node != null)
+                    while (currNode != null)
                     {
+                        //Console.WriteLine(i +" - "+ j+ "   " + "left?: " + currNode.isLeft + " ,   " + currNode.box.figures.Count);
 
-                        if (!curr_node.IsLeaf())
+                        Console.WriteLine(i + " - " + j);
+                        if (currNode.IsLeaf())
                         {
-                            double t = FindShortestDistance(scene, curr_node.box.figures, i, j);
-                            Figure hit = FindNearest(scene, curr_node.box.figures, i, j);
+                            double t = FindShortestDistance(scene, currNode.box.figures, i, j);
+                            Figure hit = FindNearest(scene, currNode.box.figures, i, j);
 
                             if (t < minT)
                             {
@@ -212,19 +206,17 @@ namespace GraphicLabs.Tracing
 
                             }
 
-                            if (curr_node == BVH.root)
-                                curr_node = curr_node.left; 
-                            else curr_node = curr_node.EscapeNode();
+                            currNode = currNode.EscapeNode();
 
                         }
 
                         else
                         {
-                            if (curr_node.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
-                                curr_node = curr_node.left;
+                            if (currNode.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                                currNode = currNode.left;
 
                             else
-                                curr_node = curr_node.EscapeNode();
+                                currNode = currNode.EscapeNode();
                         }
 
                     }
@@ -239,7 +231,7 @@ namespace GraphicLabs.Tracing
                             double lightDot = Vector.Dot(norm, lightReverseVector);
                             Ray newDirRay =
                                 new Ray(
-                                    (norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
+                                    (norm * 0.001) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
                                     lightReverseVector);
 
                             screenDrawer[i, j] = lightDot;
@@ -255,6 +247,7 @@ namespace GraphicLabs.Tracing
                         }
                         else screenDrawer[i, j] = -10;
                     }
+                    else screenDrawer[i, j] = -10;
 
                 }
             }

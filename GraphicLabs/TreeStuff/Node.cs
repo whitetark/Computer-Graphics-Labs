@@ -52,7 +52,7 @@ namespace GraphicLabs.TreeStuff
             }
             else
             {
-                if (parent == null) return right;
+                if (parent == null) return null;
                 return parent.EscapeNode();
             }
         }
