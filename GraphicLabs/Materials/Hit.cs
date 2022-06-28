@@ -10,17 +10,11 @@ namespace GraphicLabs.Materials
 {
     public class Hit
     {
-        public Point point { get; }
-        public Vector normal { get; }
-        public IMaterial? material { get; }
-        public float T { get; }
-
-        public Hit(Point point, Vector normal, IMaterial material, float t)
-        {
-            this.point = point;
-            this.normal = normal;
-            this.material = material;
-            T = t;
-        }
+        public float dist;
+        public float u;
+        public float v;
+        public Vector vector;
+        public Vector Normal;
+        public IMaterial material;
     }
 }

@@ -11,9 +11,14 @@ namespace GraphicLabs.Materials
     {
         public Vector color { get; set; }
         public float dotLight { get; set; }
-        public ResultColor(Vector color, float dotLight)
+        public ResultColor(Vector color)
         {
             this.color = color;
+
+        }
+
+        public ResultColor(Vector color, float dotLight) : this(color)
+        {
             this.dotLight = dotLight;
         }
     }

@@ -11,6 +11,6 @@ namespace GraphicLabs.Materials
 {
     public interface IMaterial
     {
-        public ResultColor Calculate(Ray ray, Hit hit, Scene scene, int recursions = 0);
+        public bool Scatter(Ray ray, Hit hit, ref Vector vec, ref Ray scattered);
     }
 }
