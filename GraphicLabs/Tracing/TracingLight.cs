@@ -270,7 +270,7 @@ namespace GraphicLabs.Tracing
                     {                        
                         Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                         double lightDot = Vector.Dot(norm, lightReverseVector);
-                        Ray newDirRay = new Ray( (norm * 0.1)+ (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))), lightReverseVector);
+                        Ray newDirRay = new Ray( (norm * 0.001)+ (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))), lightReverseVector);
 
                         screenDrawer[i, j] = lightDot;
 
