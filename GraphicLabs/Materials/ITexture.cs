@@ -10,5 +10,6 @@ namespace GraphicLabs.Materials
     public interface ITexture
     {
         Vector GetColor(float u, float v, Vector vec);
+
     }   
 }

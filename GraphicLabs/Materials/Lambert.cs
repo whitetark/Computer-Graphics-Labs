@@ -12,41 +12,47 @@ namespace GraphicLabs.Materials
 {
     public class Lambert : IMaterial
     {
-        private readonly ITexture albedo;
 
-        public Lambert (Vector colorish)
+
+        private Vector color;
+        private int[,] texture;
+
+
+        public Lambert(Vector colorish, int[,] texture)
         {
-            albedo = new SolidTexture(colorish);
+            color = colorish;
+            this.texture = texture;
         }
 
-        public Lambert (ITexture texture)
-        {
-            this.albedo = texture;
-        }
 
 
         public static float RandomF()
         {
-            Random rnd=new Random();
+            Random rnd = new Random();
             return (float)rnd.NextDouble();
 
         }
-        public static  Vector RandomUnitedVectors(Vector norm)
+        public static Vector RandomUnitedVectors(Vector norm)
         {
             Vector vec;
             do
             {
-                vec = new Vector(2 * RandomF() - 1, 2 * RandomF() - 1, 2*RandomF()-1);
+                vec = new Vector(2 * RandomF() - 1, 2 * RandomF() - 1, 2 * RandomF() - 1);
 
-            } while (Vector.Dot(norm, vec) <= 0);   
+            } while (Vector.Dot(norm, vec) <= 0);
             return vec;
         }
-        public bool Scatter(Ray ray, Hit hit, ref Vector vec, ref Ray scattered)
+
+        public float IsMirror()
         {
-            var reflected = hit.Normal + hit.vector + RandomUnitedVectors(hit.Normal);
-            vec = albedo.GetColor(hit.u, hit.v, hit.vector);
-            scattered = new Ray(hit.point, reflected-hit.vector);
-            return true;
+            return 0;
+        }
+
+        public Ray reflectedRay(Vector direction, Vector normal, Point intersectionPoint)
+        {
+            Ray reflected_ray=new Ray(intersectionPoint, direction.sub(normal.multiply(direction.anotherDot(normal)*2)).Normalize());
+
+            return reflected_ray;
         }
 
     }

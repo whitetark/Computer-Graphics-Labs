@@ -18,6 +18,16 @@ namespace GraphicLabs.Basic
             this.Y = Y;
             this.Z = Z;
         }
+
+        public Vector sub(Point point)
+        {
+            return new Vector(X - point.X, Y - point.Y, Z - point.Z);
+        }
+
+        public Vector anotherDot(Vector vec)
+        {
+            return new Vector(X * vec.X, Y * vec.Y, Z * vec.Z);
+        }
         public Vector(Point start, Point end)
         {
             X = end.X-start.X;
@@ -60,6 +70,10 @@ namespace GraphicLabs.Basic
             return this;
         }
 
+        public Vector NegativeVector
+        {
+            get { return new Vector(-X, -Y, -Z); }
+        }
         public static Vector operator +(Vector n1, Vector n2)
         {
             return new Vector(n1.X+n2.X, n1.Y+n2.Y, n1.Z+n2.Z);
@@ -72,7 +86,10 @@ namespace GraphicLabs.Basic
         {
             return new Vector(n1.X * number, n1.Y * number, n1.Z * number);
         }
-
+        public Point multiply(double a)
+        {
+            return new Point(X * a, Y * a, Z * a);
+        }
         public Vector Transform(Matrix matrix)
         {
             Vector vector = new Vector(this.X, this.Y, this.Z);
