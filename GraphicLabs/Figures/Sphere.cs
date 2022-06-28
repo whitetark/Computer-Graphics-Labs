@@ -17,12 +17,10 @@ namespace GraphicLabs.Figures
             Radius = radius;
         }
 
-        public override Vector[] GetNormal(Point point)
+        public override Vector GetNormal(Point point)
         {
             Vector normal = new Vector(Center, point).Normalize();
-            Vector[] normals = new Vector[1];
-            normals[0] = normal;
-            return normals;
+            return normal;
         }
 
         public override bool IsIntersects(Ray ray)

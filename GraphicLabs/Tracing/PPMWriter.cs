@@ -12,7 +12,7 @@ public class PPMWriter:IOutput
     }
     public void Write(double[,] picture, ILight light)
     {
-        Color color = light.currColor();
+        Color color = light.getColor();
         Color black = new Color(0, 0, 0);
         var resColor = color + black;
 

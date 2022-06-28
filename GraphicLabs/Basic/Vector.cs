@@ -62,7 +62,7 @@ namespace GraphicLabs.Basic
 
         public static Vector operator +(Vector n1, Vector n2)
         {
-            return new Vector(n1.X+n2.X, n1.Y+n2.Y, n1.Z+n2.Z);
+            return new Vector(n1.X + n2.X, n1.Y+n2.Y, n1.Z+n2.Z);
         }
         public static Vector operator -(Vector n1, Vector n2)
         {

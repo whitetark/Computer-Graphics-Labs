@@ -27,14 +27,14 @@ namespace GraphicLabs.SceneStuff.Light
             intensity = 1;
         }
 
-        public Vector generateDirection(Vector normal, Point intersectionPoint)
+        public Vector getDirection(Vector normal, Point intersectionPoint)
         {
             Random rnd = new Random();
             var direction = new Vector(rnd.NextDouble() * 5, rnd.NextDouble() * 5, rnd.NextDouble() * 5);
             if(Vector.Dot(direction, normal) < 0) { direction *= -1; }
             return direction;
         }
-        public Color currColor()
+        public Color getColor()
         {
             return color * intensity;
         }

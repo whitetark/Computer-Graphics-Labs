@@ -20,15 +20,16 @@ namespace GraphicLabs.Figures
             C = c;
         }
 
-        public override Vector[] GetNormal(Point point)
+        public override Vector GetNormal(Point point)
         {
             //Vector Vector1 = B - A;
             //Vector Vector2 = C - A;
-            //return Vector.Cross(Vector1,Vector2).Normalize();
-            Vector[] normals = new Vector[3];
-            normals[0] = A.Normal;
-            normals[1] = B.Normal;
-            normals[2] = C.Normal;
+            //return Vector.Cross(Vector1, Vector2).Normalize();
+
+            //Vector[] normals = new Vector[3];
+            //normals[0] = A.Normal;
+            //normals[1] = B.Normal;
+            //normals[2] = C.Normal;
 
             //for (int i = 0; i<3; i++)
             //{
@@ -37,7 +38,35 @@ namespace GraphicLabs.Figures
             //        normals[i] = new Vector(0, 0, 0);
             //    }
             //}
-            return normals;
+            //return normals;
+            
+           
+            if(normals[0] == null)
+            {
+                if (A.Normal == null || B.Normal == null || C.Normal == null)
+                {
+                    Vector Vector1 = B - A;
+                    Vector Vector2 = C - A;
+                    return Vector.Cross(Vector1, Vector2).Normalize();
+                }
+
+                normals[0] = A.Normal;
+                normals[1] = B.Normal;
+                normals[2] = C.Normal;
+            }
+
+            double ownArea = Vector.Cross(B - A, C - A).Length() / 2;
+            double vArea = Vector.Cross(A - B, point - B).Length() / 2;
+            double uArea = Vector.Cross(C - A, point - A).Length() / 2;
+
+            double u = uArea / ownArea;
+            double v = vArea / ownArea;
+
+            var detail1 = normals[1] * u;
+            var detail2 = normals[2] * v;
+            var detail3 = normals[0] * (1 - v - u);
+
+            return (detail1 + detail2 + detail3).Normalize();
         }
 
         public override bool IsIntersects(Ray ray)
@@ -105,14 +134,6 @@ namespace GraphicLabs.Figures
             }
 
             return null;
-        }
-        public Vector[] getNormals()
-        {
-            Vector[] normals = new Vector[2];
-            normals[0] = A.Normal;
-            normals[1] = B.Normal;
-            normals[2] = C.Normal;
-            return normals;
         }
         public override string ToString()
         {
