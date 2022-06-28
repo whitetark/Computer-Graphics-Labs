@@ -174,7 +174,7 @@ namespace GraphicLabs.TreeStuff
             
             boxLeft = new Box(leftMaxX, leftMaxY, leftMaxZ, leftMinX, leftMinY, leftMinZ);
             boxLeft.figures = figuresLeft;
-            Console.WriteLine(leftMinX+ " " + leftMaxX + " " + leftMinY + " " + leftMaxY +  " " +  leftMinZ + " " + leftMaxZ);
+            //Console.WriteLine(leftMinX+ " " + leftMaxX + " " + leftMinY + " " + leftMaxY +  " " +  leftMinZ + " " + leftMaxZ);
             boxRight = new Box(rightMaxX, rightMaxY, rightMaxZ, rightMinX, rightMinY, rightMinZ);
             boxRight.figures = figuresRight;
 

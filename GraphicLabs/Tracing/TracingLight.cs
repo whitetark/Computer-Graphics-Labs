@@ -15,7 +15,7 @@ namespace GraphicLabs.Tracing
     public class TracingLight
     {
 
-        /*public Figure FindNearest(Scene scene, int i, int j)
+        public Figure FindNearestOld(Scene scene, int i, int j)
         {
             Figure nearestFigure = scene.figuresOnScene[0];
             double distance = Double.PositiveInfinity;
@@ -34,7 +34,7 @@ namespace GraphicLabs.Tracing
             }
 
             return nearestFigure;
-        }*/
+        }
 
       
 
@@ -109,6 +109,8 @@ namespace GraphicLabs.Tracing
             DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(1, -1, 1) };
             Scene scene = new Scene(camera, lightSource);
 
+            Sphere testSphere = new Sphere(new Point(-1, -1, -1), 0.5);
+
             OBJReader objreader = new OBJReader(source);
             List<Point> initialPoints = objreader.getPoints();
             List<Point> points = new List<Point>();
@@ -134,11 +136,12 @@ namespace GraphicLabs.Tracing
                 scene.addFigure(o);
                 
             }
+            scene.addFigure(testSphere);
 
             return scene;
         }
 
-        public double[,] Trace(Scene scene)
+        public double[,] TraceWTree(Scene scene)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
@@ -164,22 +167,17 @@ namespace GraphicLabs.Tracing
             }
             
             
-            Console.WriteLine("MIN X: " + minX);
+           /* Console.WriteLine("MIN X: " + minX);
             Console.WriteLine("MAX X: " + maxX);
             Console.WriteLine("MIN Y: " + minY);
             Console.WriteLine("MAX Y: " + maxY);
             Console.WriteLine("MIN Z: " + minZ);
-            Console.WriteLine("MAX Z: " + maxZ);
+            Console.WriteLine("MAX Z: " + maxZ);*/
 
             Box box = new Box(maxX, maxY, maxZ, minX, minY, minZ);
             box.figures = scene.figuresOnScene;
 
             Tree BVH = new Tree(box);
-            Console.WriteLine("num : " + BVH.root.box.figures.Count);
-            Console.WriteLine("num left: " + BVH.root.left.box.figures.Count);
-            Console.WriteLine("num right: " + BVH.root.right.box.figures.Count);
-            
-            Console.WriteLine("num right right: " + BVH.root.right.right.box.figures.Count);
 
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
@@ -193,7 +191,7 @@ namespace GraphicLabs.Tracing
                     {
                         //Console.WriteLine(i +" - "+ j+ "   " + "left?: " + currNode.isLeft + " ,   " + currNode.box.figures.Count);
 
-                        Console.WriteLine(i + " - " + j);
+                        //Console.WriteLine(i + " - " + j);
                         if (currNode.IsLeaf())
                         {
                             double t = FindShortestDistance(scene, currNode.box.figures, i, j);
@@ -252,6 +250,43 @@ namespace GraphicLabs.Tracing
                 }
             }
             
+            return screenDrawer;
+
+        }
+        public double[,] Trace(Scene scene)
+        {
+            double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
+
+            Vector lightReverseVector = new Vector(0, 0, 0) - scene.dirLight.Direction;
+
+            for (int i = 0; i < scene.cameraOnScene.width; i++)
+            {
+                for (int j = 0; j < scene.cameraOnScene.height; j++)
+                {
+
+                    Figure nearestFigure = FindNearestOld(scene, i, j);
+
+                    if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                    {                        
+                        Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                        double lightDot = Vector.Dot(norm, lightReverseVector);
+                        Ray newDirRay = new Ray( (norm * 0.1)+ (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))), lightReverseVector);
+
+                        screenDrawer[i, j] = lightDot;
+
+                        foreach (var obj in scene.figuresOnScene)
+                        {
+                            if (obj.IsIntersects(newDirRay))
+                            {
+                                screenDrawer[i, j] = 0;
+                                break;
+                            }
+                        }
+                    }
+                    else screenDrawer[i, j] = -10;
+                    
+                }
+            }
             return screenDrawer;
 
         }

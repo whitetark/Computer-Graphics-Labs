@@ -23,7 +23,7 @@
             scene.addFigure(testTriangle);
 
             // act
-            var result = tracingLight.FindNearest(scene, a, b);
+            var result = tracingLight.FindNearestOld(scene, a, b);
 
             // assert
             Assert.That(result, Is.EqualTo(expected));
@@ -51,7 +51,7 @@
             
 
             // act
-            var result = tracingLight.FindNearest(scene, a, b);
+            var result = tracingLight.FindNearestOld(scene, a, b);
 
             // assert
             Assert.That(result, Is.EqualTo(expected));
