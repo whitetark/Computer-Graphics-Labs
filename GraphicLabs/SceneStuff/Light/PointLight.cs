@@ -38,7 +38,7 @@ namespace GraphicLabs.SceneStuff.Light
 
         public Vector generateDirection(Vector normal, Point intersectionPoint)
         {
-            return origin - intersectionPoint;
+            return (origin - intersectionPoint) * -1;
         }
         public Color currColor()
         {
