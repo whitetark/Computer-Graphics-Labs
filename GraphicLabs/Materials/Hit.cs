@@ -13,6 +13,7 @@ namespace GraphicLabs.Materials
         public float dist;
         public float u;
         public float v;
+        public Point point { get; set; }
         public Vector vector;
         public Vector Normal;
         public IMaterial material;
