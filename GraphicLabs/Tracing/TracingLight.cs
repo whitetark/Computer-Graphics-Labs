@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GraphicLabs.Basic;
-using GraphicLabs.Tree;
 using GraphicLabs.Figures;
 using GraphicLabs.SceneStuff;
+using GraphicLabs.TreeStuff;
 using GraphicLabs.Tracing;
 using GraphicLabs;
 using GraphicLabs.SceneStuff.Light;
@@ -15,7 +15,8 @@ namespace GraphicLabs.Tracing
 {
     public class TracingLight
     {
-        public Figure FindNearest(Scene scene, int i, int j)
+
+        public Figure FindNearestOld(Scene scene, int i, int j)
         {
             Figure nearestFigure = scene.figuresOnScene[0];
             double distance = Double.PositiveInfinity;
@@ -34,6 +35,48 @@ namespace GraphicLabs.Tracing
             }
 
             return nearestFigure;
+        }
+
+      
+
+        public Figure FindNearest(Scene scene, List<Figure> figures, int i, int j)
+        {
+            Figure nearestFigure = figures[0];
+            double distance = Double.PositiveInfinity;
+            for (int k = 0; k < figures.Count; k++)
+            {
+                if (figures[k].IsIntersects(scene.cameraOnScene.ray(i, j)))
+                {
+                    Vector distanceVector = new Vector(scene.cameraOnScene.cameraOrigin, figures[k].IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+
+                    if (distanceVector.Length() < distance)
+                    {
+                        nearestFigure = figures[k];
+                        distance = distanceVector.Length();
+                    }
+                }
+            }
+
+            return nearestFigure;
+        }
+        
+        public double FindShortestDistance(Scene scene, List<Figure> figures, int i, int j)
+        {
+            double distance = Double.PositiveInfinity;
+            for (int k = 0; k < figures.Count; k++)
+            {
+                if (figures[k].IsIntersects(scene.cameraOnScene.ray(i, j)))
+                {
+                    Vector distanceVector = new Vector(scene.cameraOnScene.cameraOrigin, figures[k].IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+
+                    if (distanceVector.Length() < distance)
+                    {
+                        distance = distanceVector.Length();
+                    }
+                }
+            }
+
+            return distance;
         }
         
         public Scene createTestingScene()
@@ -57,18 +100,21 @@ namespace GraphicLabs.Tracing
             testTriangle = testTriangle.Transform(transMatrix);
 
             scene.addFigure(testSphere);
-            scene.addFigure(testTriangle);
+            //scene.addFigure(testTriangle);
             return scene;
         }
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 1000, 1000);
+            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 300, 300);
             ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
             //ILight lightSource = new PointLight(new Point(0, 1, 1));
             //ILight lightSource = new EnviromentLight();
+            
             Scene scene = new Scene(camera, lightSource);
             Triangle platform = new Triangle(new Point(5, 0.31989, 5), new Point(-5, 0.31989, 0), new Point(5, 0.31989, -5));
+
+            Sphere testSphere = new Sphere(new Point(-1, -1, -1), 0.5);
 
             OBJReader objreader = new OBJReader(source);
             List<Point> initialPoints = objreader.getPointsAndNormals();
@@ -93,85 +139,172 @@ namespace GraphicLabs.Tracing
             {
                 scene.addFigure(o);
             }
+            scene.addFigure(testSphere);
 
-            scene.addFigure(platform);
+            //scene.addFigure(platform);
             return scene;
         }
 
-        public double[,] Trace(Scene scene)
+        public double[,] TraceWTree(Scene scene)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
             int samplesNum = 256;
 
-            List<double> Xlist = new List<double>();
-            List<double> Ylist = new List<double>();
-            List<double> Zlist = new List<double>();
+            double minX = Double.MaxValue;
+            double maxX = Double.MinValue;
+            double minY = Double.MaxValue;
+            double maxY = Double.MinValue;
+            double minZ = Double.MaxValue;
+            double maxZ = Double.MinValue;
+
             
-            foreach (Triangle o in scene.figuresOnScene)
+            foreach (Figure o in scene.figuresOnScene)
             {
-                Xlist.Add(o.A.X);
-                Xlist.Add(o.B.X);
-                Xlist.Add(o.C.X);
-                
-                Ylist.Add(o.A.Y);
-                Ylist.Add(o.B.Y);
-                Ylist.Add(o.C.Y);
-                
-                Zlist.Add(o.A.Z);
-                Zlist.Add(o.B.Z);
-                Zlist.Add(o.C.Z);
+
+                if (o.GetMaxX() > maxX) maxX = o.GetMaxX();
+                if (o.GetMaxY() > maxY) maxY = o.GetMaxY();
+                if (o.GetMaxZ() > maxZ) maxZ = o.GetMaxZ();
+                if (o.GetMinX() < minX) minX = o.GetMinX();
+                if (o.GetMinY() < minY) minY = o.GetMinY();
+                if (o.GetMinZ() < minZ) minZ = o.GetMinZ();
             }
             
-            double minX = Xlist.Min();
-            double maxX = Xlist.Max();
-            double minY = Ylist.Min();
-            double maxY = Ylist.Max();
-            double minZ = Zlist.Min();
-            double maxZ = Zlist.Max();
             
-            Console.WriteLine("MIN X: " + minX);
+           /* Console.WriteLine("MIN X: " + minX);
             Console.WriteLine("MAX X: " + maxX);
             Console.WriteLine("MIN Y: " + minY);
             Console.WriteLine("MAX Y: " + maxY);
             Console.WriteLine("MIN Z: " + minZ);
-            Console.WriteLine("MAX Z: " + maxZ);
+            Console.WriteLine("MAX Z: " + maxZ);*/
 
             Box box = new Box(maxX, maxY, maxZ, minX, minY, minZ);
-            
+            box.figures = scene.figuresOnScene;
+
+            Tree BVH = new Tree(box);
+
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
                 for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
-                    if (box.IsIntersects(scene.cameraOnScene.ray(i, j)))
-                    {
-                        Figure nearestFigure = FindNearest(scene, i, j);
+                    Node currNode = BVH.root;
+                    double minT = double.MaxValue;
+                    Figure nearestFigure = null;
 
+                    while (currNode != null)
+                    {
+                        //Console.WriteLine(i +" - "+ j+ "   " + "left?: " + currNode.isLeft + " ,   " + currNode.box.figures.Count);
+
+                        //Console.WriteLine(i + " - " + j);
+                        if (currNode.IsLeaf())
+                        {
+                            double t = FindShortestDistance(scene, currNode.box.figures, i, j);
+                            Figure hit = FindNearest(scene, currNode.box.figures, i, j);
+
+                            if (t < minT)
+                            {
+                                minT = t;
+                                nearestFigure = hit;
+
+                            }
+
+                            currNode = currNode.EscapeNode();
+
+                        }
+
+                        else
+                        {
+                            if (currNode.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                                currNode = currNode.left;
+
+                            else
+                                currNode = currNode.EscapeNode();
+                        }
+
+                    }
+
+                    if (nearestFigure != null)
+                    {
                         if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                         {
-                            var intersectionPoint = nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i,j));
-                            var norm = nearestFigure.GetNormal(intersectionPoint);
+                            var intersectionPoint = nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j));
 
-                            for (int s = 0; s < samplesNum; s++) {
-                               var lightReverseVector = scene.light.getDirection(norm, intersectionPoint);
-                               double lightDot = Vector.Dot(norm, lightReverseVector);
-                               var newDirRay = new Ray(norm * 0.001 + intersectionPoint, lightReverseVector);
-                               screenDrawer[i, j] += lightDot;
 
-                               foreach (var obj in scene.figuresOnScene)
-                               {
-                                   if (obj.IsIntersects(newDirRay))
-                                   {
-                                      screenDrawer[i, j] = 0;
-                                      break;
-                                   }
-                               }
+                            Vector norm =
+                                nearestFigure.GetNormal(
+                                    nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                            for (int s = 0; s < samplesNum; s++)
+                            {
+                                var lightReverseVector = scene.light.getDirection(norm, intersectionPoint);
+                                double lightDot = Vector.Dot(norm, lightReverseVector);
+                                var newDirRay = new Ray(norm * 0.001 + intersectionPoint, lightReverseVector);
+                                screenDrawer[i, j] += lightDot;
+
+                                foreach (var obj in scene.figuresOnScene)
+                                {
+                                    if (obj.IsIntersects(newDirRay))
+                                    {
+                                        screenDrawer[i, j] = 0;
+                                        break;
+                                    }
+                                }
+
+                                screenDrawer[i, j] = screenDrawer[i, j] / samplesNum;
+
                             }
+
+                            
+                        }
+                        else screenDrawer[i, j] = -10;
+
+                    }
+                    else screenDrawer[i, j] = -10;
+                }
+            }
+
+            return screenDrawer;
+
+        }
+        public double[,] Trace(Scene scene)
+        {
+            double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
+
+            int samplesNum = 256;
+
+            for (int i = 0; i < scene.cameraOnScene.width; i++)
+            {
+                for (int j = 0; j < scene.cameraOnScene.height; j++)
+                {
+
+                    Figure nearestFigure = FindNearestOld(scene, i, j);
+
+                    if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                    {
+                        var intersectionPoint = nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j));
+
+                        Vector norm =
+                            nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                        for (int s = 0; s < samplesNum; s++)
+                        {
+                            var lightReverseVector = scene.light.getDirection(norm, intersectionPoint);
+                            double lightDot = Vector.Dot(norm, lightReverseVector);
+                            var newDirRay = new Ray(norm * 0.001 + intersectionPoint, lightReverseVector);
+                            screenDrawer[i, j] += lightDot;
+
+                            foreach (var obj in scene.figuresOnScene)
+                            {
+                                if (obj.IsIntersects(newDirRay))
+                                {
+                                    screenDrawer[i, j] = 0;
+                                    break;
+                                }
+                            }
+
                             screenDrawer[i, j] = screenDrawer[i, j] / samplesNum;
 
                         }
-                        else screenDrawer[i, j] = -10;
                     }
                     else screenDrawer[i, j] = -10;
+                    
                 }
             }
             return screenDrawer;
