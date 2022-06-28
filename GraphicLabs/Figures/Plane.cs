@@ -59,5 +59,39 @@ namespace GraphicLabs.Figures
             // scale*ray*normal + k*normal = 0
             // scale = -k*normal/ray*normal
         }
+        public override double GetMaxX()
+        {
+            return 100;
+        }
+
+        public override double GetMaxY()
+        {
+            return 100;
+        }
+
+        public override double GetMaxZ()
+        {
+            return 100;
+        }
+
+        public override double GetMinX()
+        {
+            return -100;
+        }
+
+        public override double GetMinY()
+        {
+            return -100;
+        }
+
+        public override double GetMinZ()
+        {
+            return -100;
+        }
+        
+        public override Point GetCenter()
+        {
+            return Center;
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace GraphicLabs.Tracing
 {
     public class TracingLight
     {
-        public Figure FindNearest(Scene scene, int i, int j)
+        /*public Figure FindNearest(Scene scene, int i, int j)
         {
             Figure nearestFigure = scene.figuresOnScene[0];
             double distance = Double.PositiveInfinity;
@@ -27,6 +27,27 @@ namespace GraphicLabs.Tracing
                     if (distanceVector.Length() < distance)
                     {
                         nearestFigure = scene.figuresOnScene[k];
+                        distance = distanceVector.Length();
+                    }
+                }
+            }
+
+            return nearestFigure;
+        }*/
+        
+        public Figure FindNearest(Scene scene, List<Figure> figures, int i, int j)
+        {
+            Figure nearestFigure = figures[0];
+            double distance = Double.PositiveInfinity;
+            for (int k = 0; k < figures.Count; k++)
+            {
+                if (figures[k].IsIntersects(scene.cameraOnScene.ray(i, j)))
+                {
+                    Vector distanceVector = new Vector(scene.cameraOnScene.cameraOrigin, figures[k].IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+
+                    if (distanceVector.Length() < distance)
+                    {
+                        nearestFigure = figures[k];
                         distance = distanceVector.Length();
                     }
                 }
@@ -62,7 +83,7 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 0, -1, 100, 100);
+            Camera camera = new Camera(0, 0, -11, 0, 0, -3, 80, 80);
             DirectionalLight lightSource = new DirectionalLight() { Direction = new Vector(0, -1, 1) };
             Scene scene = new Scene(camera, lightSource);
 
@@ -100,31 +121,37 @@ namespace GraphicLabs.Tracing
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
 
             Vector lightReverseVector = new Vector(0, 0, 0) - scene.dirLight.Direction;
-            List<double> Xlist = new List<double>();
-            List<double> Ylist = new List<double>();
-            List<double> Zlist = new List<double>();
             
-            foreach (Triangle o in scene.figuresOnScene)
+            double minX = Double.MaxValue;
+            double maxX = Double.MinValue;
+            double minY = Double.MaxValue;
+            double maxY = Double.MinValue;
+            double minZ = Double.MaxValue;
+            double maxZ = Double.MinValue;
+
+           // List<Box> boxes = new List<Box>();
+            
+            foreach (Figure o in scene.figuresOnScene)
             {
-                Xlist.Add(o.A.X);
-                Xlist.Add(o.B.X);
-                Xlist.Add(o.C.X);
+                /*double currentMinX = Math.Min(o.C.X, Math.Min(o.A.X, o.B.X));
+                double currentMaxX = Math.Max(o.C.X, Math.Max(o.A.X, o.B.X));
                 
-                Ylist.Add(o.A.Y);
-                Ylist.Add(o.B.Y);
-                Ylist.Add(o.C.Y);
+                double currentMinY = Math.Min(o.C.Y, Math.Min(o.A.Y, o.B.Y));
+                double currentMaxY = Math.Max(o.C.Y, Math.Max(o.A.Y, o.B.Y));
                 
-                Zlist.Add(o.A.Z);
-                Zlist.Add(o.B.Z);
-                Zlist.Add(o.C.Z);
+                double currentMinZ = Math.Min(o.C.Z, Math.Min(o.A.Z, o.B.Z));
+                double currentMaxZ = Math.Max(o.C.Z, Math.Max(o.A.Z, o.B.Z));
+                */
+                //boxes.Add(new Box(o.GetMaxX(), o.GetMaxY(), o.GetMaxZ(), o.GetMinX(), o.GetMinY(), o.GetMinZ()));
+
+                if (o.GetMaxX() > maxX) maxX = o.GetMaxX();
+                if (o.GetMaxY() > maxY) maxY = o.GetMaxY();
+                if (o.GetMaxZ() > maxZ) maxZ = o.GetMaxZ();
+                if (o.GetMinX() < minX) minX = o.GetMinX();
+                if (o.GetMinY() < minY) minY = o.GetMinY();
+                if (o.GetMinZ() < minZ) minZ = o.GetMinZ();
             }
             
-            double minX = Xlist.Min();
-            double maxX = Xlist.Max();
-            double minY = Ylist.Min();
-            double maxY = Ylist.Max();
-            double minZ = Zlist.Min();
-            double maxZ = Zlist.Max();
             
             Console.WriteLine("MIN X: " + minX);
             Console.WriteLine("MAX X: " + maxX);
@@ -134,36 +161,216 @@ namespace GraphicLabs.Tracing
             Console.WriteLine("MAX Z: " + maxZ);
 
             Box box = new Box(maxX, maxY, maxZ, minX, minY, minZ);
+            //box.boxes = boxes;
             
+            Box boxLeft;
+            Box boxRight;
+            List<Figure> figuresLeft = new List<Figure>();
+            List<Figure> figuresRight = new List<Figure>();
+
+            double extX = maxX - minX;
+            double extY = maxY - minY;
+            double extZ = maxZ - minZ;
+            
+            double leftMinX = Double.MaxValue;
+            double leftMaxX = Double.MinValue;
+            double leftMinY = Double.MaxValue;
+            double leftMaxY = Double.MinValue;
+            double leftMinZ = Double.MaxValue;
+            double leftMaxZ = Double.MinValue;
+                    
+            double rightMinX = Double.MaxValue;
+            double rightMaxX = Double.MinValue;
+            double rightMinY = Double.MaxValue;
+            double rightMaxY = Double.MinValue;
+            double rightMinZ = Double.MaxValue;
+            double rightMaxZ = Double.MinValue;
+
+            if (extX > extY)
+            {
+                if (extX > extZ)
+                {
+                    double middleX = extX / 2;
+                    
+                    foreach (var b in scene.figuresOnScene)
+                    {
+                        if (b.GetCenter().X < middleX)
+                        {
+                            figuresLeft.Add(b);
+                            if (b.GetMaxX() > leftMaxX) leftMaxX = b.GetMaxX();
+                            if (b.GetMaxY() > leftMaxY) leftMaxY = b.GetMaxY();
+                            if (b.GetMaxZ() > leftMaxZ) leftMaxZ = b.GetMaxZ();
+                            if (b.GetMinX() < leftMinX) leftMinX = b.GetMinX();
+                            if (b.GetMinY() < leftMinY) leftMinY = b.GetMinY();
+                            if (b.GetMinZ() < leftMinZ) leftMinZ = b.GetMinZ();
+                        }
+                        else
+                        {
+                            figuresRight.Add(b);
+                            if (b.GetMaxX() > rightMaxX) rightMaxX = b.GetMaxX();
+                            if (b.GetMaxY() > rightMaxY) rightMaxY = b.GetMaxY();
+                            if (b.GetMaxZ() > rightMaxZ) rightMaxZ = b.GetMaxZ();
+                            if (b.GetMinX() < rightMinX) rightMinX = b.GetMinX();
+                            if (b.GetMinY() < rightMinY) rightMinY = b.GetMinY();
+                            if (b.GetMinZ() < rightMinZ) rightMinZ = b.GetMinZ();
+                        }
+                    }
+                }
+                else
+                {
+                    double middleZ = extZ / 2;
+                    
+                    foreach (var b in scene.figuresOnScene)
+                    {
+                        if (b.GetCenter().Z < middleZ)
+                        {
+                            figuresLeft.Add(b);
+                            if (b.GetMaxX() > leftMaxX) leftMaxX = b.GetMaxX();
+                            if (b.GetMaxY() > leftMaxY) leftMaxY = b.GetMaxY();
+                            if (b.GetMaxZ() > leftMaxZ) leftMaxZ = b.GetMaxZ();
+                            if (b.GetMinX() < leftMinX) leftMinX = b.GetMinX();
+                            if (b.GetMinY() < leftMinY) leftMinY = b.GetMinY();
+                            if (b.GetMinZ() < leftMinZ) leftMinZ = b.GetMinZ();
+                        }
+                        else
+                        {
+                            figuresRight.Add(b);
+                            if (b.GetMaxX() > rightMaxX) rightMaxX = b.GetMaxX();
+                            if (b.GetMaxY() > rightMaxY) rightMaxY = b.GetMaxY();
+                            if (b.GetMaxZ() > rightMaxZ) rightMaxZ = b.GetMaxZ();
+                            if (b.GetMinX() < rightMinX) rightMinX = b.GetMinX();
+                            if (b.GetMinY() < rightMinY) rightMinY = b.GetMinY();
+                            if (b.GetMinZ() < rightMinZ) rightMinZ = b.GetMinZ();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (extY > extZ)
+                {
+                    double middleY = extY / 2;
+                    
+                    foreach (var b in scene.figuresOnScene)
+                    {
+                        if (b.GetCenter().Y < middleY)
+                        {
+                            figuresLeft.Add(b);
+                            if (b.GetMaxX() > leftMaxX) leftMaxX = b.GetMaxX();
+                            if (b.GetMaxY() > leftMaxY) leftMaxY = b.GetMaxY();
+                            if (b.GetMaxZ() > leftMaxZ) leftMaxZ = b.GetMaxZ();
+                            if (b.GetMinX() < leftMinX) leftMinX = b.GetMinX();
+                            if (b.GetMinY() < leftMinY) leftMinY = b.GetMinY();
+                            if (b.GetMinZ() < leftMinZ) leftMinZ = b.GetMinZ();
+                        }
+                        else
+                        {
+                            figuresRight.Add(b);
+                            if (b.GetMaxX() > rightMaxX) rightMaxX = b.GetMaxX();
+                            if (b.GetMaxY() > rightMaxY) rightMaxY = b.GetMaxY();
+                            if (b.GetMaxZ() > rightMaxZ) rightMaxZ = b.GetMaxZ();
+                            if (b.GetMinX() < rightMinX) rightMinX = b.GetMinX();
+                            if (b.GetMinY() < rightMinY) rightMinY = b.GetMinY();
+                            if (b.GetMinZ() < rightMinZ) rightMinZ = b.GetMinZ();
+                        }
+                    }
+                }
+                else
+                {
+                    double middleZ = extZ / 2;
+                    
+                    foreach (var b in scene.figuresOnScene)
+                    {
+                        if (b.GetCenter().Z < middleZ)
+                        {
+                            figuresLeft.Add(b);
+                            if (b.GetMaxX() > leftMaxX) leftMaxX = b.GetMaxX();
+                            if (b.GetMaxY() > leftMaxY) leftMaxY = b.GetMaxY();
+                            if (b.GetMaxZ() > leftMaxZ) leftMaxZ = b.GetMaxZ();
+                            if (b.GetMinX() < leftMinX) leftMinX = b.GetMinX();
+                            if (b.GetMinY() < leftMinY) leftMinY = b.GetMinY();
+                            if (b.GetMinZ() < leftMinZ) leftMinZ = b.GetMinZ();
+                        }
+                        else
+                        {
+                            figuresRight.Add(b);
+                            if (b.GetMaxX() > rightMaxX) rightMaxX = b.GetMaxX();
+                            if (b.GetMaxY() > rightMaxY) rightMaxY = b.GetMaxY();
+                            if (b.GetMaxZ() > rightMaxZ) rightMaxZ = b.GetMaxZ();
+                            if (b.GetMinX() < rightMinX) rightMinX = b.GetMinX();
+                            if (b.GetMinY() < rightMinY) rightMinY = b.GetMinY();
+                            if (b.GetMinZ() < rightMinZ) rightMinZ = b.GetMinZ();
+                        }
+                    }
+                }
+            }
+            
+            boxLeft = new Box(leftMaxX, leftMaxY, leftMaxZ, leftMinX, leftMinY, leftMinZ);
+            boxLeft.figures = figuresLeft;
+            boxRight = new Box(rightMaxX, rightMaxY, rightMaxZ, rightMinX, rightMinY, rightMinZ);
+            boxRight.figures = figuresRight;
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
                 for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
                     if (box.IsIntersects(scene.cameraOnScene.ray(i, j)))
                     {
-                        Figure nearestFigure = FindNearest(scene, i, j);
-
-                        if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                        if (boxLeft.IsIntersects(scene.cameraOnScene.ray(i, j)))
                         {
-                            Vector norm =
-                                nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
-                            double lightDot = Vector.Dot(norm, lightReverseVector);
-                            Ray newDirRay =
-                                new Ray((norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
-                                    lightReverseVector);
+                            Figure nearestFigure = FindNearest(scene, figuresLeft, i, j);
 
-                            screenDrawer[i, j] = lightDot;
-
-                            foreach (var obj in scene.figuresOnScene)
+                            if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
                             {
-                                if (obj.IsIntersects(newDirRay))
+                                Vector norm =
+                                    nearestFigure.GetNormal(
+                                        nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                                double lightDot = Vector.Dot(norm, lightReverseVector);
+                                Ray newDirRay =
+                                    new Ray(
+                                        (norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
+                                        lightReverseVector);
+
+                                screenDrawer[i, j] = lightDot;
+
+                                foreach (var obj in scene.figuresOnScene)
                                 {
-                                    screenDrawer[i, j] = 0;
-                                    break;
+                                    if (obj.IsIntersects(newDirRay))
+                                    {
+                                        screenDrawer[i, j] = 0;
+                                        break;
+                                    }
                                 }
                             }
+                            else screenDrawer[i, j] = -10;
                         }
-                        else screenDrawer[i, j] = -10;
+                        if (boxRight.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                        {
+                            Figure nearestFigure = FindNearest(scene, figuresRight, i, j);
+
+                            if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                            {
+                                Vector norm =
+                                    nearestFigure.GetNormal(
+                                        nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                                double lightDot = Vector.Dot(norm, lightReverseVector);
+                                Ray newDirRay =
+                                    new Ray(
+                                        (norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
+                                        lightReverseVector);
+
+                                screenDrawer[i, j] = lightDot;
+
+                                foreach (var obj in scene.figuresOnScene)
+                                {
+                                    if (obj.IsIntersects(newDirRay))
+                                    {
+                                        screenDrawer[i, j] = 0;
+                                        break;
+                                    }
+                                }
+                            }
+                            else screenDrawer[i, j] = -10;
+                        }
                     }
                     else
                     {

@@ -1,4 +1,5 @@
 ﻿using GraphicLabs.Basic;
+using GraphicLabs.Figures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,10 @@ namespace GraphicLabs.Tree
         public double MinX { get; set; }
         public double MinY { get; set; }
         public double MinZ { get; set; }
+        
+        public Point Center { get; }
+        
+        public List<Figure> figures { get; set; }
 
         public Box(double maxx, double maxy, double maxz, double minx, double miny, double minz)
         {
@@ -24,6 +29,8 @@ namespace GraphicLabs.Tree
             MinX = minx;
             MinY = miny;
             MinZ = minz;
+
+            Center = new Point(MinX + ((MaxX - MinX) / 2), MinY + ((MaxY - MinY) / 2), MinZ + ((MaxZ - MinZ) / 2));
 
         }
 

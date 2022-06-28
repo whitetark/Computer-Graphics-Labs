@@ -9,6 +9,12 @@ namespace GraphicLabs.Figures
 {
     public class Sphere : Figure
     {
+        private double MaxX;
+        private double MaxY;
+        private double MaxZ;
+        private double MinX;
+        private double MinY;
+        private double MinZ;
         public Point Center { get; set; }
         public double Radius { get; set; }
 
@@ -16,6 +22,12 @@ namespace GraphicLabs.Figures
         {
             Center = center;
             Radius = radius;
+            MaxX = Center.X + Radius;
+            MaxY = Center.Y + Radius;
+            MaxZ = Center.Z + Radius;
+            MinX = Center.X - Radius;
+            MinY = Center.Y - Radius;
+            MinZ = Center.Z - Radius;
         }
 
         public override Vector GetNormal(Point point)
@@ -67,6 +79,40 @@ namespace GraphicLabs.Figures
                 return new Point(X, Y, Z);
             }
             return null;
+        }
+        public override double GetMaxX()
+        {
+            return MaxX;
+        }
+
+        public override double GetMaxY()
+        {
+            return MaxY;
+        }
+
+        public override double GetMaxZ()
+        {
+            return MaxZ;
+        }
+
+        public override double GetMinX()
+        {
+            return MinX;
+        }
+
+        public override double GetMinY()
+        {
+            return MinY;
+        }
+
+        public override double GetMinZ()
+        {
+            return MinZ;
+        }
+        
+        public override Point GetCenter()
+        {
+            return Center;
         }
     }
 }   
