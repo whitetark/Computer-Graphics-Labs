@@ -11,6 +11,7 @@ namespace GraphicLabs.Materials
 {
     public interface IMaterial
     {
-        public bool Scatter(Ray ray, Hit hit, ref Vector vec, ref Ray scattered);
+        public float isMirror();
+        public Ray reflectedRay(Vector direction, Vector normal, Point intersectionPoint);
     }
 }
