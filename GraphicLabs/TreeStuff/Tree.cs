@@ -18,20 +18,20 @@ namespace GraphicLabs.TreeStuff
 
         public Tree(Box b)
         {
-            root = AddNode(null, b);
+            root = AddNode(null, b, false);
         }
 
-        private Node AddNode(Node node, Box b0)
+        private Node AddNode(Node node, Box b0, bool l)
         {
-            if (b0.figures.Count < 50) return new Node(b0, node);
+            if (b0.figures.Count < 50) return new Node(b0, node, l);
             
             nodeCount++;
-            Console.WriteLine(nodeCount);
-            Node newNode = new Node(b0, node);
+            //Console.WriteLine(nodeCount);
+            Node newNode = new Node(b0, node, l);
             Box boxLeft;
             Box boxRight;
 
-            Console.WriteLine("num: " + newNode.box.figures.Count);
+            //Console.WriteLine("num: " + newNode.box.figures.Count);
             List<Figure> figuresLeft = new List<Figure>();
             List<Figure> figuresRight = new List<Figure>();
 
@@ -178,8 +178,8 @@ namespace GraphicLabs.TreeStuff
             boxRight = new Box(rightMaxX, rightMaxY, rightMaxZ, rightMinX, rightMinY, rightMinZ);
             boxRight.figures = figuresRight;
 
-            newNode.left = AddNode(newNode, boxLeft);
-            newNode.right = AddNode(newNode, boxRight);
+            newNode.left = AddNode(newNode, boxLeft, true);
+            newNode.right = AddNode(newNode, boxRight, false);
 
             return newNode;
         }

@@ -14,6 +14,7 @@ namespace GraphicLabs.Tracing
 {
     public class TracingLight
     {
+        
         /*public Figure FindNearest(Scene scene, int i, int j)
         {
             Figure nearestFigure = scene.figuresOnScene[0];
@@ -54,6 +55,25 @@ namespace GraphicLabs.Tracing
             }
 
             return nearestFigure;
+        }
+        
+        public double FindShortestDistance(Scene scene, List<Figure> figures, int i, int j)
+        {
+            double distance = Double.PositiveInfinity;
+            for (int k = 0; k < figures.Count; k++)
+            {
+                if (figures[k].IsIntersects(scene.cameraOnScene.ray(i, j)))
+                {
+                    Vector distanceVector = new Vector(scene.cameraOnScene.cameraOrigin, figures[k].IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+
+                    if (distanceVector.Length() < distance)
+                    {
+                        distance = distanceVector.Length();
+                    }
+                }
+            }
+
+            return distance;
         }
         
         public Scene createTestingScene()
@@ -164,82 +184,81 @@ namespace GraphicLabs.Tracing
             box.figures = scene.figuresOnScene;
 
             Tree BVH = new Tree(box);
-            
-            
+            Console.WriteLine("num : " + BVH.root.box.figures.Count);
+            Console.WriteLine("num left: " + BVH.root.left.box.figures.Count);
+            Console.WriteLine("num right: " + BVH.root.right.box.figures.Count);
+
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
                 for (int j = 0; j < scene.cameraOnScene.height; j++)
                 {
-                    if (BVH.root.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                    Node curr_node = BVH.root;
+                    double minT = double.MaxValue;
+
+                    Figure nearestFigure = null;
+
+                    while (curr_node != null)
                     {
-                        //double t = 0;
-                        
-                        if (BVH.root.left.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
+
+                        if (!curr_node.IsLeaf())
                         {
-                            Figure nearestFigure = FindNearest(scene, BVH.root.left.box.figures, i, j);
+                            double t = FindShortestDistance(scene, curr_node.box.figures, i, j);
+                            Figure hit = FindNearest(scene, curr_node.box.figures, i, j);
 
-                            if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                            if (t < minT)
                             {
-                                Vector norm =
-                                    nearestFigure.GetNormal(
-                                        nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
-                                double lightDot = Vector.Dot(norm, lightReverseVector);
-                                Ray newDirRay =
-                                    new Ray(
-                                        (norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
-                                        lightReverseVector);
+                                minT = t;
+                                nearestFigure = hit;
 
-                                screenDrawer[i, j] = lightDot;
+                            }
 
-                                foreach (var obj in scene.figuresOnScene)
+                            if (curr_node == BVH.root)
+                                curr_node = curr_node.left; 
+                            else curr_node = curr_node.EscapeNode();
+
+                        }
+
+                        else
+                        {
+                            if (curr_node.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                                curr_node = curr_node.left;
+
+                            else
+                                curr_node = curr_node.EscapeNode();
+                        }
+
+                    }
+
+                    if (nearestFigure != null)
+                    {
+                        if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
+                        {
+                            Vector norm =
+                                nearestFigure.GetNormal(
+                                    nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                            double lightDot = Vector.Dot(norm, lightReverseVector);
+                            Ray newDirRay =
+                                new Ray(
+                                    (norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
+                                    lightReverseVector);
+
+                            screenDrawer[i, j] = lightDot;
+
+                            foreach (var obj in scene.figuresOnScene)
+                            {
+                                if (obj.IsIntersects(newDirRay))
                                 {
-                                    if (obj.IsIntersects(newDirRay))
-                                    {
-                                        screenDrawer[i, j] = 0;
-                                        break;
-                                    }
+                                    screenDrawer[i, j] = 0;
+                                    break;
                                 }
                             }
-                            else screenDrawer[i, j] = -10;
                         }
-                        
-                        if (BVH.root.right.box.IsIntersects(scene.cameraOnScene.ray(i, j)))
-                        {
-                            Figure nearestFigure = FindNearest(scene, BVH.root.right.box.figures, i, j);
-
-                            if (nearestFigure.IsIntersects(scene.cameraOnScene.ray(i, j)))
-                            {
-                                Vector norm =
-                                    nearestFigure.GetNormal(
-                                        nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
-                                double lightDot = Vector.Dot(norm, lightReverseVector);
-                                Ray newDirRay =
-                                    new Ray(
-                                        (norm * 0.1) + (nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j))),
-                                        lightReverseVector);
-
-                                screenDrawer[i, j] = lightDot;
-
-                                foreach (var obj in scene.figuresOnScene)
-                                {
-                                    if (obj.IsIntersects(newDirRay))
-                                    {
-                                        screenDrawer[i, j] = 0;
-                                        break;
-                                    }
-                                }
-                            }
-                            else screenDrawer[i, j] = -10;
-                        }
-                    } 
-                    else
-                    {
-                        screenDrawer[i, j] = -10;
+                        else screenDrawer[i, j] = -10;
                     }
 
                 }
-                
             }
+            
             return screenDrawer;
 
         }
