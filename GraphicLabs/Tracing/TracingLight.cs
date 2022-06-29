@@ -148,10 +148,10 @@ namespace GraphicLabs.Tracing
             return scene;
         }
 
-        public double[,] TraceWTree(Scene scene)
+        public double[,] TraceWTree(Scene scene, int samplesNum)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
-            int samplesNum = 1;
+
 
             double minX = Double.MaxValue;
             double maxX = Double.MinValue;
@@ -270,11 +270,9 @@ namespace GraphicLabs.Tracing
             return screenDrawer;
 
         }
-        public double[,] Trace(Scene scene)
+        public double[,] Trace(Scene scene, int samplesNum)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
-
-            int samplesNum = 256;
 
             for (int i = 0; i < scene.cameraOnScene.width; i++)
             {
@@ -287,8 +285,7 @@ namespace GraphicLabs.Tracing
                     {
                         var intersectionPoint = nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j));
 
-                        Vector norm =
-                            nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                        Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                         for (int s = 0; s < samplesNum; s++)
                         {
                             var lightReverseVector = scene.light.getDirection(norm, intersectionPoint);
@@ -304,13 +301,10 @@ namespace GraphicLabs.Tracing
                                     break;
                                 }
                             }
-
                             screenDrawer[i, j] = screenDrawer[i, j] / samplesNum;
-
                         }
                     }
                     else screenDrawer[i, j] = -10;
-                    
                 }
             }
             return screenDrawer;
