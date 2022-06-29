@@ -233,6 +233,11 @@ namespace GraphicLabs.Figures
         {
             return Center;
         }
+        
+        public override IMaterial GetMaterial()
+        {
+            return material;
+        }
 
     }
 }

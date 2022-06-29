@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GraphicLabs.Basic;
+using GraphicLabs.Materials;
 
 namespace GraphicLabs.Figures
 {
     public abstract class Figure
     {
+        public abstract IMaterial GetMaterial();
         public abstract bool IsIntersects(Ray ray);
         public abstract Vector GetNormal(Point point);
         public abstract Point IntersectionPoint(Ray ray);

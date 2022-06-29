@@ -18,29 +18,10 @@ namespace GraphicLabs.Materials
         private int[,] texture;
 
 
-        public Lambert(Vector colorish, int[,] texture)
+        public Lambert(Vector color, int[,] texture)
         {
-            color = colorish;
+            this.color = color;
             this.texture = texture;
-        }
-
-
-
-        public static float RandomF()
-        {
-            Random rnd = new Random();
-            return (float)rnd.NextDouble();
-
-        }
-        public static Vector RandomUnitedVectors(Vector norm)
-        {
-            Vector vec;
-            do
-            {
-                vec = new Vector(2 * RandomF() - 1, 2 * RandomF() - 1, 2 * RandomF() - 1);
-
-            } while (Vector.Dot(norm, vec) <= 0);
-            return vec;
         }
 
         public float isMirror()

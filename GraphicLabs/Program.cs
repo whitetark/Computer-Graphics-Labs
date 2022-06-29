@@ -36,7 +36,7 @@ namespace GraphicLabs
                 Console.WriteLine("Tracing with tree...");
                 var screenDrawer = tracingLight.TraceWTree(scene);
                 IOutput pictureOutput = new PPMWriter(input[1]);
-                pictureOutput.Write(screenDrawer, scene.light);
+                pictureOutput.Write(screenDrawer, scene.light, scene);
                 Console.Write("Done!");
                 Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt"));
             }
@@ -46,7 +46,7 @@ namespace GraphicLabs
                 Console.WriteLine("Tracing without tree...");
                 var screenDrawer = tracingLight.Trace(scene);
                 IOutput pictureOutput = new PPMWriter(input[1]);
-                pictureOutput.Write(screenDrawer, scene.light);
+                pictureOutput.Write(screenDrawer, scene.light, scene);
                 Console.Write("Done!");
                 Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt"));
             }
@@ -56,14 +56,14 @@ namespace GraphicLabs
                 Console.WriteLine("Tracing with tree and without tree...");
                 var screenDrawer1 = tracingLight.TraceWTree(scene);
                 IOutput pictureOutput1 = new PPMWriter("output1.ppm");
-                pictureOutput1.Write(screenDrawer1, scene.light);
+                pictureOutput1.Write(screenDrawer1, scene.light, scene);
                 Console.Write("Done (with tree)!");
                 
                 Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt"));
                 
                 var screenDrawer2 = tracingLight.Trace(scene);
                 IOutput pictureOutput2 = new PPMWriter("output2.ppm");
-                pictureOutput2.Write(screenDrawer2, scene.light);
+                pictureOutput2.Write(screenDrawer2, scene.light, scene);
                 Console.Write("Done (w/o tree)!");
                 Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt"));
             }

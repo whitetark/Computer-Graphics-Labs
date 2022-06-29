@@ -118,6 +118,10 @@ namespace GraphicLabs.Figures
         
         public override Double[] Bari(Point p){
              return null;
-            }
+        }
+        public override IMaterial GetMaterial()
+        {
+            return material;
+        }
     }
 }   

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GraphicLabs.Basic;
+using GraphicLabs.Materials;
 
 namespace GraphicLabs.Figures
 {
@@ -11,6 +12,8 @@ namespace GraphicLabs.Figures
     {
         public Vector Normal { get; set; }
         public Point Center { get; set; }
+        
+        public IMaterial material { get; set; }
 
         public Plane(Vector normal, Point center)
         {
@@ -21,6 +24,11 @@ namespace GraphicLabs.Figures
         public override Vector GetNormal(Point point)
         {
             return Normal;
+        }
+
+        public override IMaterial GetMaterial()
+        {
+            return material;
         }
 
         public override bool IsIntersects(Ray ray)

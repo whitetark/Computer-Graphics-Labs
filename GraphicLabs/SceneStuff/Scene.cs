@@ -14,6 +14,8 @@ namespace GraphicLabs.SceneStuff
         public List<Figure> figuresOnScene = new List<Figure>();
         public Camera cameraOnScene { get; set; }
         public ILight light { get; set; }
+        
+        public Vector helpingColor { get; set; }
 
         public Scene() { }
         public Scene(Camera camera)

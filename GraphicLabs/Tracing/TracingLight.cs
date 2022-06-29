@@ -107,10 +107,10 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 400, 400);
-            //ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
+            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 200, 200);
+            ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
             //ILight lightSource = new PointLight(new Point(0, 1, 1));
-            ILight lightSource = new EnviromentLight();
+            //ILight lightSource = new EnviromentLight();
             
             Scene scene = new Scene(camera, lightSource);
             //Triangle platform = new Triangle(new Point(5, 0.31989, 5), new Point(-5, 0.31989, 0), new Point(5, 0.31989, -5));
@@ -135,7 +135,7 @@ namespace GraphicLabs.Tracing
             }
             //platform.Transform(transMatrix);
             List<Triangle> objects = objreader.getTriangles(points);
-            IMaterial lambert = new Lambert(new Vector(0.5, 1,1), null); 
+            IMaterial lambert = new Lambert(new Vector(1, 1,1), null); 
             
             foreach (var o in objects)
             {
@@ -151,7 +151,7 @@ namespace GraphicLabs.Tracing
         public double[,] TraceWTree(Scene scene)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
-            int samplesNum = 32;
+            int samplesNum = 1;
 
             double minX = Double.MaxValue;
             double maxX = Double.MinValue;
@@ -235,6 +235,9 @@ namespace GraphicLabs.Tracing
                             Vector norm =
                                 nearestFigure.GetNormal(
                                     nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                            
+                            Vector c = nearestFigure.GetMaterial().biDirScat(scene.light.getDirection(norm, intersectionPoint), scene.cameraOnScene.ray(i, j).Direction, nearestFigure, intersectionPoint) * (new Vector(scene.light.getColor().r, scene.light.getColor().g, scene.light.getColor().b)*(scene.light.intensity));
+                            scene.helpingColor = c;
                             for (int s = 0; s < samplesNum; s++)
                             {
                                 var lightReverseVector = scene.light.getDirection(norm, intersectionPoint);
