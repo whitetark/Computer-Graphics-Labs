@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GraphicLabs.Basic;
+using GraphicLabs.Materials;
 
 namespace GraphicLabs.Figures
 {
@@ -16,12 +17,18 @@ namespace GraphicLabs.Figures
         private double MinY;
         private double MinZ;
         
+        public IMaterial material { get; set; }
         public Point Center { get; set; }
         public Point A { get; set; }
         public Point B { get; set; }
         public Point C { get; set; }
+        
+        public Vector At { get; set; }
+        public Vector Bt { get; set; }
+        public Vector Ct { get; set; }
+        
         public Vector[] normals = new Vector[3];
-        public Triangle(Point a, Point b, Point c)
+        public Triangle(Point a, Point b, Point c, Vector t1, Vector t2, Vector t3)
         {
             A = a;
             B = b;
@@ -32,6 +39,10 @@ namespace GraphicLabs.Figures
             MinX = Math.Min(C.X, Math.Min(A.X, B.X));
             MinY = Math.Min(C.Y, Math.Min(A.Y, B.Y));
             MinZ = Math.Min(C.Z, Math.Min(A.Z, B.Z));
+            
+            At = new Vector(t1.X, t1.Y, 0);
+            Bt = new Vector(t2.X, t2.Y, 0);
+            Ct = new Vector(t3.X, t3.Y, 0);
 
             Center = new Point((A.X + B.X + C.X) / 3, (A.Y + B.Y + C.Y) / 3, (A.Z + B.Z + C.Z) / 3);
         }
@@ -158,6 +169,8 @@ namespace GraphicLabs.Figures
             return null;
         }
 
+        
+
         public override string ToString()
         {
             return $"Triangle(({A.X},{A.Y},{A.Z}),({B.X},{B.Y},{B.Z}),({C.X},{C.Y},{C.Z}))";
@@ -168,7 +181,22 @@ namespace GraphicLabs.Figures
             var a = A.Transform(matrix);
             var b = B.Transform(matrix);
             var c = C.Transform(matrix);
-            return new Triangle(a, b, c);
+            return new Triangle(a, b, c, At, Bt, Ct);
+        }
+        
+        public override Double[] Bari(Point p){
+            if (At.X <= 1) {
+                double ownArea = Vector.Cross((B - A), (C - A)).Length() / 2;
+                double vArea = Vector.Cross((A - B), (p - B)).Length() / 2;
+                double uArea = Vector.Cross((C - A), (p - A)).Length() / 2;
+                double u = uArea / ownArea;
+                double v = vArea / ownArea;
+                Vector res = (Bt *u) + ((Ct * v)+(At *(1 - v - u)));
+                return new Double[]{res.X, res.Y};
+            }
+            else{
+                return new Double[]{0, 0};
+            }
         }
 
         public override double GetMaxX()

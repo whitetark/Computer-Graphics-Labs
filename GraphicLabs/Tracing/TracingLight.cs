@@ -9,6 +9,7 @@ using GraphicLabs.SceneStuff;
 using GraphicLabs.TreeStuff;
 using GraphicLabs.Tracing;
 using GraphicLabs;
+using GraphicLabs.Materials;
 using GraphicLabs.SceneStuff.Light;
 
 namespace GraphicLabs.Tracing
@@ -87,7 +88,7 @@ namespace GraphicLabs.Tracing
 
             Sphere testSphere = new Sphere(new Point(0, 0, -8), 1);
             Sphere testSphere2 = new Sphere(new Point(0, 3, -12), 4);
-            Triangle testTriangle = new Triangle(new Point(0, 0, -15), new Point(2, -1, -5), new Point(-1, 2, -5));
+            
             Plane testPlane = new Plane(new Vector(0, 1, 1), new Point(0, 0, -7));
 
             // Transformation Process
@@ -97,7 +98,7 @@ namespace GraphicLabs.Tracing
             var transMatrix = Transformation.CreateTransformationMatrix(0, 0, 0,
                                                                         1, 1, 1,
                                                                         0, 0, 0);
-            testTriangle = testTriangle.Transform(transMatrix);
+            //testTriangle = testTriangle.Transform(transMatrix);
 
             scene.addFigure(testSphere);
             //scene.addFigure(testTriangle);
@@ -106,18 +107,18 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 300, 300);
-            ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
+            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 400, 400);
+            //ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
             //ILight lightSource = new PointLight(new Point(0, 1, 1));
-            //ILight lightSource = new EnviromentLight();
+            ILight lightSource = new EnviromentLight();
             
             Scene scene = new Scene(camera, lightSource);
-            Triangle platform = new Triangle(new Point(5, 0.31989, 5), new Point(-5, 0.31989, 0), new Point(5, 0.31989, -5));
+            //Triangle platform = new Triangle(new Point(5, 0.31989, 5), new Point(-5, 0.31989, 0), new Point(5, 0.31989, -5));
 
             Sphere testSphere = new Sphere(new Point(-1, -1, -1), 0.5);
 
             OBJReader objreader = new OBJReader(source);
-            List<Point> initialPoints = objreader.getPointsAndNormals();
+            List<Point> initialPoints = objreader.getInfo();
             List<Point> points = new List<Point>();
 
             // Transformation Process
@@ -134,9 +135,11 @@ namespace GraphicLabs.Tracing
             }
             //platform.Transform(transMatrix);
             List<Triangle> objects = objreader.getTriangles(points);
+            IMaterial lambert = new Lambert(new Vector(0.5, 1,1), null); 
             
             foreach (var o in objects)
             {
+                o.material = lambert;
                 scene.addFigure(o);
             }
             scene.addFigure(testSphere);
@@ -148,7 +151,7 @@ namespace GraphicLabs.Tracing
         public double[,] TraceWTree(Scene scene)
         {
             double[,] screenDrawer = new double[scene.cameraOnScene.width, scene.cameraOnScene.height];
-            int samplesNum = 256;
+            int samplesNum = 32;
 
             double minX = Double.MaxValue;
             double maxX = Double.MinValue;

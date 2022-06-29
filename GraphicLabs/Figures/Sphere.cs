@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GraphicLabs.Materials;
 
 namespace GraphicLabs.Figures
 {
@@ -15,6 +16,7 @@ namespace GraphicLabs.Figures
         private double MinX;
         private double MinY;
         private double MinZ;
+        public IMaterial material { get; set; }
         public Point Center { get; set; }
         public double Radius { get; set; }
         public Sphere(Point center, double radius)
@@ -113,5 +115,9 @@ namespace GraphicLabs.Figures
         {
             return Center;
         }
+        
+        public override Double[] Bari(Point p){
+             return null;
+            }
     }
 }   

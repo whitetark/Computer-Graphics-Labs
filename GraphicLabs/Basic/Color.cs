@@ -8,9 +8,9 @@ namespace GraphicLabs.Basic
 {
     public class Color
     {
-        public int r;
-        public int g;
-        public int b;
+        public int r { get; set; }
+        public int g { get; set; }
+        public int b { get; set; }
 
         public Color(int r, int g, int b)
         {

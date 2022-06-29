@@ -93,5 +93,8 @@ namespace GraphicLabs.Figures
         {
             return Center;
         }
+        public override Double[] Bari(Point p){
+            return null;
+        }
     }
 }

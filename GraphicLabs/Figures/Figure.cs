@@ -13,6 +13,8 @@ namespace GraphicLabs.Figures
         public abstract Vector GetNormal(Point point);
         public abstract Point IntersectionPoint(Ray ray);
 
+        public abstract Double[] Bari(Point p);
+
         public abstract double GetMaxX();
         public abstract double GetMaxY();
         public abstract double GetMaxZ();
