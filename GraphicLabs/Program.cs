@@ -27,6 +27,7 @@ namespace GraphicLabs
             TracingLight tracingLight = new TracingLight();
             
             var scene = tracingLight.createTestingSceneFromFile(input[0]);
+            int sampleNum = 1;
 
             Console.WriteLine("Choose an option: 1 - tracing with tree, 2 - tracing w/o tree, 3 - both");
             int var = Convert.ToInt32(Console.ReadLine());
@@ -34,7 +35,7 @@ namespace GraphicLabs
             {
                 Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt"));
                 Console.WriteLine("Tracing with tree...");
-                var screenDrawer = tracingLight.TraceWTree(scene);
+                var screenDrawer = tracingLight.TraceWTree(scene, sampleNum);
                 IOutput pictureOutput = new PPMWriter(input[1]);
                 pictureOutput.Write(screenDrawer, scene.light);
                 Console.Write("Done!");
@@ -44,7 +45,7 @@ namespace GraphicLabs
             {
                 Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt"));
                 Console.WriteLine("Tracing without tree...");
-                var screenDrawer = tracingLight.Trace(scene);
+                var screenDrawer = tracingLight.Trace(scene, sampleNum);
                 IOutput pictureOutput = new PPMWriter(input[1]);
                 pictureOutput.Write(screenDrawer, scene.light);
                 Console.Write("Done!");
@@ -54,14 +55,14 @@ namespace GraphicLabs
             {
                 Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt"));
                 Console.WriteLine("Tracing with tree and without tree...");
-                var screenDrawer1 = tracingLight.TraceWTree(scene);
+                var screenDrawer1 = tracingLight.TraceWTree(scene, sampleNum);
                 IOutput pictureOutput1 = new PPMWriter("output1.ppm");
                 pictureOutput1.Write(screenDrawer1, scene.light);
                 Console.Write("Done (with tree)!");
                 
                 Console.WriteLine(DateTime.Now.ToString("HH:mm:ss tt"));
                 
-                var screenDrawer2 = tracingLight.Trace(scene);
+                var screenDrawer2 = tracingLight.Trace(scene, sampleNum);
                 IOutput pictureOutput2 = new PPMWriter("output2.ppm");
                 pictureOutput2.Write(screenDrawer2, scene.light);
                 Console.Write("Done (w/o tree)!");
