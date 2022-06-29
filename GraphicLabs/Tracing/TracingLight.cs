@@ -107,15 +107,15 @@ namespace GraphicLabs.Tracing
         
         public Scene createTestingSceneFromFile(string source)
         {
-            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 200, 200);
-            ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
-            //ILight lightSource = new PointLight(new Point(0, 1, 1));
+            Camera camera = new Camera(0, 0, -11, 0, 5, -2, 80, 90);
+            //ILight lightSource = new DirectionalLight(new Vector(0, 1, 1));
+            ILight lightSource = new PointLight(new Point(0, 1, 1));
             //ILight lightSource = new EnviromentLight();
             
             Scene scene = new Scene(camera, lightSource);
             //Triangle platform = new Triangle(new Point(5, 0.31989, 5), new Point(-5, 0.31989, 0), new Point(5, 0.31989, -5));
 
-            Sphere testSphere = new Sphere(new Point(-1, -1, -1), 0.5);
+            //Sphere testSphere = new Sphere(new Point(0, 0.5, -0.5), 0.5);
 
             OBJReader objreader = new OBJReader(source);
             List<Point> initialPoints = objreader.getInfo();
@@ -135,14 +135,16 @@ namespace GraphicLabs.Tracing
             }
             //platform.Transform(transMatrix);
             List<Triangle> objects = objreader.getTriangles(points);
-            IMaterial lambert = new Lambert(new Vector(1, 1,1), null); 
-            
+            IMaterial lambert = new Lambert(new Vector(1, 1,0), null); 
+            //IMaterial mirror = new Mirror();
             foreach (var o in objects)
             {
                 o.material = lambert;
                 scene.addFigure(o);
             }
-            scene.addFigure(testSphere);
+
+            //testSphere.material = lambert;
+            //scene.addFigure(testSphere);
 
             //scene.addFigure(platform);
             return scene;
@@ -236,12 +238,97 @@ namespace GraphicLabs.Tracing
                                 nearestFigure.GetNormal(
                                     nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
                             
-                            Vector c = nearestFigure.GetMaterial().biDirScat(scene.light.getDirection(norm, intersectionPoint), scene.cameraOnScene.ray(i, j).Direction, nearestFigure, intersectionPoint) * (new Vector(scene.light.getColor().r, scene.light.getColor().g, scene.light.getColor().b)*(scene.light.intensity));
-                            scene.helpingColor = c;
+                            /*while (nearestFigure.GetMaterial().isMirror() >0)
+                            {
+                                Ray reflectRay = nearestFigure.GetMaterial().reflectedRay(scene.cameraOnScene.ray(i, j).Direction, norm, intersectionPoint);
+                                currNode = BVH.root;
+                                minT = double.MaxValue;
+                                Figure nearestFigure1 = null;
+
+                                while (currNode != null)
+                                {
+                                    if (currNode.IsLeaf())
+                                    {
+                                        double t = FindShortestDistance(scene, currNode.box.figures, i, j);
+                                        Figure hit = FindNearest(scene, currNode.box.figures, i, j);
+
+                                        if (t < minT)
+                                        {
+                                            minT = t;
+                                            nearestFigure1 = hit;
+
+                                        }
+
+                                        currNode = currNode.EscapeNode();
+
+                                    }
+
+                                    else
+                                    {
+                                        if (currNode.box.IsIntersects(reflectRay))
+                                            currNode = currNode.left;
+
+                                        else
+                                            currNode = currNode.EscapeNode();
+                                    }
+
+                                }
+
+                                if (nearestFigure1 != null)
+                                {
+                                    if (nearestFigure1.IsIntersects(reflectRay))
+                                    {
+                                        Point intersectionPoint1 = nearestFigure1.IntersectionPoint(reflectRay);
+                                        Vector norm1 =
+                                            nearestFigure1.GetNormal(intersectionPoint1);
+                                        var lightReverseVector1 = scene.light.getDirection(norm1, intersectionPoint1);
+                                        Vector c1 = nearestFigure.GetMaterial().biDirScat(scene.light.getDirection(norm1, intersectionPoint1), reflectRay.Direction, nearestFigure1, intersectionPoint1) * (new Vector(scene.light.getColor().r, scene.light.getColor().g, scene.light.getColor().b)*(scene.light.intensity));
+                                        scene.helpingColor = c1;
+                                        
+                                        for (int s = 0; s < samplesNum; s++)
+                                        {
+                                            double lightDot1 = Vector.Dot(norm1, lightReverseVector1);
+                                            var newDirRay1 = new Ray(norm1 * 0.001 + intersectionPoint1,
+                                                lightReverseVector1);
+                                            screenDrawer[i, j] += lightDot1;
+
+                                            foreach (var obj in scene.figuresOnScene)
+                                            {
+                                                if (obj.IsIntersects(newDirRay1))
+                                                {
+                                                    screenDrawer[i, j] = 0;
+                                                    break;
+                                                }
+                                            }
+
+                                            screenDrawer[i, j] = screenDrawer[i, j] / samplesNum;
+
+                                        }
+                                    }
+                                    else screenDrawer[i, j] = -10;
+                                
+                                    
+                                }
+
+                                
+                                return screenDrawer;
+
+                            }*/
+                            if (nearestFigure.GetMaterial().GetTexture() != null) 
+                                scene.helpingColor = nearestFigure.GetMaterial().biDirScat(scene.light.getDirection(norm, intersectionPoint), scene.cameraOnScene.ray(i, j).Direction, nearestFigure, intersectionPoint) * (new Vector(scene.light.getColor().r, scene.light.getColor().g, scene.light.getColor().b)*(scene.light.intensity));
+                            else
+                            {
+                                scene.helpingColor = nearestFigure.GetMaterial().GetColor();
+                            }
+
+                            
+                            //c = nearestFigure.GetMaterial().GetColor();
+                            
                             for (int s = 0; s < samplesNum; s++)
                             {
                                 var lightReverseVector = scene.light.getDirection(norm, intersectionPoint);
                                 double lightDot = Vector.Dot(norm, lightReverseVector);
+                                
                                 var newDirRay = new Ray(norm * 0.001 + intersectionPoint, lightReverseVector);
                                 screenDrawer[i, j] += lightDot;
 
@@ -286,6 +373,12 @@ namespace GraphicLabs.Tracing
                         var intersectionPoint = nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j));
 
                         Vector norm = nearestFigure.GetNormal(nearestFigure.IntersectionPoint(scene.cameraOnScene.ray(i, j)));
+                        if (nearestFigure.GetMaterial().GetTexture() != null) 
+                            scene.helpingColor = nearestFigure.GetMaterial().biDirScat(scene.light.getDirection(norm, intersectionPoint), scene.cameraOnScene.ray(i, j).Direction, nearestFigure, intersectionPoint) * (new Vector(scene.light.getColor().r, scene.light.getColor().g, scene.light.getColor().b)*(scene.light.intensity));
+                        else
+                        {
+                            scene.helpingColor = nearestFigure.GetMaterial().GetColor();
+                        }
                         for (int s = 0; s < samplesNum; s++)
                         {
                             var lightReverseVector = scene.light.getDirection(norm, intersectionPoint);

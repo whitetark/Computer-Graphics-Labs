@@ -14,8 +14,8 @@ namespace GraphicLabs.Materials
     public class Lambert : IMaterial
     {
 
-        private Vector color;
-        private int[,] texture;
+        public Vector color { get; set; }
+        public int[,] texture { get; set; }
 
 
         public Lambert(Vector color, int[,] texture)
@@ -31,14 +31,10 @@ namespace GraphicLabs.Materials
 
         public Vector biDirScat(Vector wo, Vector wi, Figure f, Point p)
         {
-            if (texture == null) {
-                return (color * (1/(2*Math.PI)));
-            }
-            else{
-                Double[] xy = f.Bari(p);
-                Color color = new Color(texture[(int) (xy[0]*texture.Length), (int) (xy[1]*texture.Length)]);
-                return new Vector(color.r,color.g, color.b);
-            }
+            Double[] xy = f.Bari(p);
+            Color color = new Color(texture[(int) (xy[0]*texture.Length), (int) (xy[1]*texture.Length)]);
+            return new Vector(color.r,color.g, color.b);
+                
         }
 
         public Ray reflectedRay(Vector direction, Vector normal, Point intersectionPoint)
@@ -48,5 +44,14 @@ namespace GraphicLabs.Materials
             return reflected_ray;
         }
 
+        public Vector GetColor()
+        {
+            return color;
+        }
+
+        public int[,] GetTexture()
+        {
+            return texture;
+        }
     }
 }

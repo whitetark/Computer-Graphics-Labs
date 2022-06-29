@@ -24,4 +24,14 @@ public class Mirror : IMaterial
         Ray reflectRay = new Ray(intersectionPoint, dir - (normalAtPoint * (Vector.Dot(dir, normalAtPoint) * 2)).Normalize());
         return reflectRay;
     }
+
+    public Vector GetColor()
+    {
+        return null;
+    }
+
+    public int[,] GetTexture()
+    {
+        return null;
+    }
 }
