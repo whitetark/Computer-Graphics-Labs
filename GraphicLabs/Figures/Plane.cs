@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GraphicLabs.Basic;
+using GraphicLabs.Materials;
 
 namespace GraphicLabs.Figures
 {
@@ -11,6 +12,8 @@ namespace GraphicLabs.Figures
     {
         public Vector Normal { get; set; }
         public Point Center { get; set; }
+        
+        public IMaterial material { get; set; }
 
         public Plane(Vector normal, Point center)
         {
@@ -21,6 +24,11 @@ namespace GraphicLabs.Figures
         public override Vector GetNormal(Point point)
         {
             return Normal;
+        }
+
+        public override IMaterial GetMaterial()
+        {
+            return material;
         }
 
         public override bool IsIntersects(Ray ray)
@@ -58,6 +66,43 @@ namespace GraphicLabs.Figures
             // scale*ray*normal + (start - p0)*normal = 0 ; start - p0 = k
             // scale*ray*normal + k*normal = 0
             // scale = -k*normal/ray*normal
+        }
+        public override double GetMaxX()
+        {
+            return 100;
+        }
+
+        public override double GetMaxY()
+        {
+            return 100;
+        }
+
+        public override double GetMaxZ()
+        {
+            return 100;
+        }
+
+        public override double GetMinX()
+        {
+            return -100;
+        }
+
+        public override double GetMinY()
+        {
+            return -100;
+        }
+
+        public override double GetMinZ()
+        {
+            return -100;
+        }
+        
+        public override Point GetCenter()
+        {
+            return Center;
+        }
+        public override Double[] Bari(Point p){
+            return null;
         }
     }
 }

@@ -4,18 +4,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GraphicLabs.Materials;
 
 namespace GraphicLabs.Figures
 {
     public class Sphere : Figure
     {
+        private double MaxX;
+        private double MaxY;
+        private double MaxZ;
+        private double MinX;
+        private double MinY;
+        private double MinZ;
+        public IMaterial material { get; set; }
         public Point Center { get; set; }
         public double Radius { get; set; }
-
         public Sphere(Point center, double radius)
         {
             Center = center;
             Radius = radius;
+            MaxX = Center.X + Radius;
+            MaxY = Center.Y + Radius;
+            MaxZ = Center.Z + Radius;
+            MinX = Center.X - Radius;
+            MinY = Center.Y - Radius;
+            MinZ = Center.Z - Radius;
         }
 
         public override Vector GetNormal(Point point)
@@ -67,6 +80,48 @@ namespace GraphicLabs.Figures
                 return new Point(X, Y, Z);
             }
             return null;
+        }
+        public override double GetMaxX()
+        {
+            return MaxX;
+        }
+
+        public override double GetMaxY()
+        {
+            return MaxY;
+        }
+
+        public override double GetMaxZ()
+        {
+            return MaxZ;
+        }
+
+        public override double GetMinX()
+        {
+            return MinX;
+        }
+
+        public override double GetMinY()
+        {
+            return MinY;
+        }
+
+        public override double GetMinZ()
+        {
+            return MinZ;
+        }
+        
+        public override Point GetCenter()
+        {
+            return Center;
+        }
+        
+        public override Double[] Bari(Point p){
+             return null;
+        }
+        public override IMaterial GetMaterial()
+        {
+            return material;
         }
     }
 }   
